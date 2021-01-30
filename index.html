@@ -166,36 +166,63 @@
         if (!caseMatrice == '') return true;
         return false;
     }
-    function coupGagnantHorizontal(nombreGagnant, casePlayed) {
-
+    function coupGagnantHorizontal(nombreGagnant, coup) {
+        sommeDroite = 0;
+        console.log(coup);
+        colonne = coup[0];
+        ligne = coup[1];
+        console.log(`${colonne}:${ligne}`);
+        aVerifDroite = 0;
+        countColonne = colonne;
+        valideADroite = 0;
+        //Tant que l'on dépasse pas le morpion | matrice[0].length retourne le nombre de colonne
+        while(countColonne < matrice[0].length-1){
+            countColonne++;
+            aVerifDroite++;
+            //console.log('+1')
+        }
+        for(i=1;i<=aVerifDroite;i++){
+                console.log(`vérification case ${colonne+i}:`)
+                if(matrice[ligne][colonne+i] !== 'X'){
+                    console.log('pasegalX');
+                    break;
+               
+                }
+                else{
+                    console.log('egalX');
+                    valideADroite++;
+                }
+            }
+        
+        
+        console.log(`colonne: ${colonne} limit:${matrice[0].length-1} | caseAVerifDroite = ${aVerifDroite} | valideADroite: ${valideADroite}`)
     }
-    function coupGagnant(nombreGagnant, casePlayed) {
-
-    }
-
 
     nombreLigne = 5;
     nombreColonne = 5;
     tour = 1;
 
     createMatrice(5, 5);
-    console.log(casePlayed(matrice[2][1]));
-    console.log(matrice);
+    console.log(matrice[0].length)
     canvas.addEventListener('click', function (e) {
         //Récupération des coordonnées de la sourie
         let x = Math.ceil(e.offsetX / 100) * 100 - 100;
         let y = Math.ceil(e.offsetY / 100) * 100 - 100;
         console.log(`${x / 100} et ${y / 100}`);
-        //Vérifier si la case a été joué
-        if (!casePlayed(matrice[y / 100][x / 100])) {
+        //Vérifier si la case a été joué | 
+        ligne = y / 100;
+        colonne = x / 100;
+        if (!casePlayed(matrice[colonne][ligne])) {
             //Jouer le tour
             if (tour == 1) {
-                matrice[y / 100][x / 100] = 'X';
+                matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
                 drawX(x, y, caseWidth, caseHeight)
+                coupGagnantHorizontal(5, [colonne, ligne]);
+                //ifCoupGagnant tour = 0 sinon tour = 2
                 tour = 2;
             }
-            else {
-                matrice[y / 100][x / 100] = 'O';
+            else if (tour == 2) {
+                matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
                 drawCircle(x, y, caseWidth);
                 tour = 1;
             }
