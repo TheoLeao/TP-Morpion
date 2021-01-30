@@ -79,22 +79,25 @@
 </body>
 <script src="js/script.js"></script>
 <script>
-    nomJoueur1 = document.querySelector('#nomJoueur1');
-    nomJoueur2 = document.querySelector('#nomJoueur1');
+    //Joueurs
+    let nomJoueur1 = document.querySelector('#nomJoueur1');
+    let nomJoueur2 = document.querySelector('#nomJoueur2');
 
+    //Canvas
     var canvas = document.querySelector('#canvasJeu');
     var width = canvas.width = 500;
     var height = canvas.height = 500;
-
     var ctx = canvas.getContext('2d');
-    //Définition couleur de fond
     ctx.fillStyle = `rgb(248,241,241)`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+    //Fonctions géomotrie
     function drawX(originX, originY, size) {
         padding = 10;
         ctx.beginPath(); // Début du chemin
         ctx.moveTo(originX, originY); // Le tracé part du point 50,50
-        ctx.lineTo(originX + size , originY + size); // Un segment est ajouté vers 200,200
+        ctx.lineTo(originX + size, originY + size); // Un segment est ajouté vers 200,200
         ctx.moveTo(originX + size, originY); // Puis on saute jusqu'à 200,50
         ctx.lineTo(originX, originY + size); // Puis on trace jusqu'à 50,200
         ctx.lineWidth = 7;
@@ -106,8 +109,8 @@
     function drawCircle(originX, originY, size) {
         ctx.beginPath();
         ctx.lineWidth = "7";
-        ctx.strokeStyle ="#EE6352"
-        ctx.arc(originX+size/2, originY+size/2, size / 2 - 5, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#EE6352"
+        ctx.arc(originX + size / 2, originY + size / 2, size / 2 - 5, 0, 2 * Math.PI);
         ctx.stroke();
     }
     function drawRect(originX, originY, width, height, fillColor) {
@@ -119,7 +122,7 @@
 
     }
     function drawLimit(canvas, nombreLigne, nombreColonne) {
-        if(nombreLigne != nombreColonne) return(error('Le nombre de ligne n\'est pas égale au nombre de colonne'));;
+        if (nombreLigne != nombreColonne) return (error('Le nombre de ligne n\'est pas égale au nombre de colonne'));;
         //Récuperer taille du canvas
         canvasWidth = canvas.width;
         canvasHeight = canvas.height;
@@ -132,16 +135,16 @@
         //Chaque ligne
         for (i_line = 0; i_line <= nombreLigne; i_line++) {
             //Chaque case
-            console.log(`line ${i_line}`)
+            //console.log(`line ${i_line}`)
             for (i_case = 0; i_case < nombreColonne; i_case++) {
                 if (pair) {
-                    console.log(`--case ${i_case}`);
+                    //console.log(`--case ${i_case}`);
                     drawRect(caseWidth * i_case, caseWidth * i_line, caseWidth, caseHeight, '#F9FAFC');
                     //drawX(caseWidth * i_case, caseHeight * i_line, caseWidth); //Test dessiné une croix 1 fois sur 2
                     pair = false;
                 }
                 else {
-                    console.log(`--case ${i_case}`);
+                    //console.log(`--case ${i_case}`);
                     drawRect(caseWidth * i_case, caseWidth * i_line, caseWidth, caseHeight, '#F4F9FF');
                     //drawCircle(caseWidth * i_case, caseHeight * i_line, caseWidth); //Test dessiné un cercle 1 fois sur 2
                     pair = true;
@@ -151,22 +154,59 @@
         }
 
     }
+    function createMatrice(nombreLigne, nombreColonne) {
+        matrice = Array.from(
+            { length: nombreColonne }, () => Array.from(
+                { length: nombreLigne }, () => ('')
+            )
+        )
+
+    }
+    function casePlayed(caseMatrice) {
+        if (!caseMatrice == '') return true;
+        return false;
+    }
+    function coupGagnantHorizontal(nombreGagnant, casePlayed) {
+
+    }
+    function coupGagnant(nombreGagnant, casePlayed) {
+
+    }
+
+
+    nombreLigne = 5;
+    nombreColonne = 5;
     tour = 1;
-    canvas.addEventListener('click', function(e){
+
+    createMatrice(5, 5);
+    console.log(casePlayed(matrice[2][1]));
+    console.log(matrice);
+    canvas.addEventListener('click', function (e) {
+        //Récupération des coordonnées de la sourie
         let x = Math.ceil(e.offsetX / 100) * 100 - 100;
         let y = Math.ceil(e.offsetY / 100) * 100 - 100;
-        if(tour == 1){
-            drawX(x, y, caseWidth, caseHeight, '#F9FAFC')
-            tour = 2;
+        console.log(`${x / 100} et ${y / 100}`);
+        //Vérifier si la case a été joué
+        if (!casePlayed(matrice[y / 100][x / 100])) {
+            //Jouer le tour
+            if (tour == 1) {
+                matrice[y / 100][x / 100] = 'X';
+                drawX(x, y, caseWidth, caseHeight)
+                tour = 2;
+            }
+            else {
+                matrice[y / 100][x / 100] = 'O';
+                drawCircle(x, y, caseWidth);
+                tour = 1;
+            }
         }
-        else{
-            drawCircle(x, y, caseWidth); 
-            tour = 1;
-        }
-       
+        console.log(matrice);
     });
+
+
+
     //Case {0:0}
- 
+
     //Case {1:0}
 
     drawLimit(canvas, 5, 5);
@@ -176,13 +216,8 @@
 
     //Ecouteurs d'évenements
     function nouvellePartie() {
-        //Vérification noms des joueurs
-        if (nomJoueur1.value !== null) {
-            console.log('joueur 1 pas null')
-        }
-        else {
-            console.log('joueur 1 null')
-        }
+
+
     }
 
 </script>
