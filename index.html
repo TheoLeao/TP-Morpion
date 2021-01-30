@@ -167,37 +167,64 @@
         return false;
     }
     function coupGagnantHorizontal(nombreGagnant, coup) {
-        sommeDroite = 0;
-        console.log(coup);
         colonne = coup[0];
         ligne = coup[1];
-        console.log(`${colonne}:${ligne}`);
-        aVerifDroite = 0;
-        countColonne = colonne;
-        valideADroite = 0;
-        //Tant que l'on dépasse pas le morpion | matrice[0].length retourne le nombre de colonne
-        while(countColonne < matrice[0].length-1){
-            countColonne++;
+        aVerifDroite = aVerifGauche = 0;
+        countColonne1 = countColonne2 = colonne;
+        valideADroite = valideAGauche = 0;
+
+        //Récupérer le nombre de case à vérifier à droite
+        while (countColonne1 < matrice[0].length - 1) {
+            countColonne1++;
             aVerifDroite++;
             //console.log('+1')
         }
-        for(i=1;i<=aVerifDroite;i++){
-                console.log(`vérification case ${colonne+i}:`)
-                if(matrice[ligne][colonne+i] !== 'X'){
-                    console.log('pasegalX');
-                    break;
-               
-                }
-                else{
-                    console.log('egalX');
-                    valideADroite++;
-                }
+        //Récupérer le nombre de case à vérifier à gauche
+        while (countColonne2 > 0) {
+            countColonne2--;
+            aVerifGauche++;
+        }
+        console.log(`à verif Gauche: ${aVerifGauche} | à verif Droite: ${aVerifDroite}`);
+        //Vérifier les cases à vérifier à droite 
+        for (i = 1; i <= aVerifDroite; i++) {
+            console.log(`vérification case ${colonne + i}:`)
+            //Si la case suivante n'est pas valide
+            if (matrice[ligne][colonne + i] !== 'X') {
+                console.log('pasegalX');
+                //Arrêter de parcourir
+                break;
             }
-        
-        
-        console.log(`colonne: ${colonne} limit:${matrice[0].length-1} | caseAVerifDroite = ${aVerifDroite} | valideADroite: ${valideADroite}`)
-    }
+            //Sinon, ajouter 1 à valideADroite
+            else {
+                console.log('egalX');
+                valideADroite++;
+            }
+        }
+        //Vérifier les cases à vérifier à gauche 
+        for (i = 1; i <= aVerifGauche; i++) {
+            console.log(`vérification case ${colonne + i}:`)
+            //Si la case suivante n'est pas valide
+            if (matrice[ligne][colonne - i] !== 'X') {
+                console.log('pasegalX');
+                //Arrêter de parcourir
+                break;
+            }
+            //Sinon, ajouter 1 à valideADroite
+            else {
+                console.log('egalX');
+                valideAGauche++;
+            }
+        }
 
+        if (valideAGauche + valideADroite == nombreGagnant - 1) {
+            return true;
+        }
+        console.log(`colonne: ${colonne} limit:${matrice[0].length - 1} | caseAVerifGauche: ${aVerifGauche} | case valide Gauche: ${valideAGauche} caseAVerifDroite = ${aVerifDroite} | valideADroite: ${valideADroite}`)
+    }
+    function coupGagnant(nombreGagnant, coup) {
+        if (coupGagnantHorizontal(nombreGagnant, coup)) return true;
+        return false;
+    }
     nombreLigne = 5;
     nombreColonne = 5;
     tour = 1;
@@ -212,14 +239,20 @@
         //Vérifier si la case a été joué | 
         ligne = y / 100;
         colonne = x / 100;
-        if (!casePlayed(matrice[colonne][ligne])) {
+        if (!casePlayed(matrice[ligne][colonne])) {
             //Jouer le tour
             if (tour == 1) {
                 matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
                 drawX(x, y, caseWidth, caseHeight)
-                coupGagnantHorizontal(5, [colonne, ligne]);
+                if (coupGagnant(4, [colonne, ligne])) {
+                    tour = 0;
+                    alert('Le joueur 1 a gagné');
+                }
+                else {
+                    tour = 2;
+                }
                 //ifCoupGagnant tour = 0 sinon tour = 2
-                tour = 2;
+
             }
             else if (tour == 2) {
                 matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
