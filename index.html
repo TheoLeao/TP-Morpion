@@ -84,15 +84,18 @@
     let nomJoueur2 = document.querySelector('#nomJoueur2');
 
     //Canvas
-    var canvas = document.querySelector('#canvasJeu');
-    var width = canvas.width = 500;
-    var height = canvas.height = 500;
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = `rgb(248,241,241)`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
-    //Fonctions géomotrie
+    function createCanvas(idCanvas, width, height, backgroundColor) {
+        canvas = document.querySelector(`#${idCanvas}`);
+        width = canvas.width = width;
+        height = canvas.height = height;
+        ctx = canvas.getContext('2d');
+        ctx.fillStyle = `${backgroundColor}`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    //createCanvas('canvasJeu', 500, 500, 'rgb(248,241,241)');
+    //Fonctions
     function drawX(originX, originY, size) {
         padding = 10;
         ctx.beginPath(); // Début du chemin
@@ -160,7 +163,6 @@
                 { length: nombreLigne }, () => ('')
             )
         )
-
     }
     function casePlayed(caseMatrice) {
         if (!caseMatrice == '') return true;
@@ -221,7 +223,6 @@
         }
         //console.log(`colonne: ${colonne} limit:${matrice[0].length - 1} | caseAVerifGauche: ${aVerifGauche} | case valide Gauche: ${valideAGauche} caseAVerifDroite = ${aVerifDroite} | valideADroite: ${valideADroite}`)
     }
-
     function coupGagnantVertical(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
@@ -278,7 +279,6 @@
 
         //console.log(`ligne: ${ligne} limit:${matrice.length - 1} | caseAVerifHaut ${aVerifHaut} | case valide haut: ${valideEnHaut} caseAVerifBas = ${aVerifBas} | case valide bas: ${valideEnBas}`)
     }
-
     function coupGagnantDiagonaleGauche(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
@@ -359,7 +359,6 @@
         }
         //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautGauche ${aVerifHautGauche} | caseValidHautGauche: ${valideEnHautGauche} caseAVerifBasDroit: ${aVerifBasDroit} caseValideBasDroit: ${valideEnBasDroit}`)
     }
-
     function coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
@@ -439,75 +438,76 @@
 
         //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautDroit: ${aVerifHautDroite} | valideHautDroite: ${valideHautDroite} caseAVerifBasGauche: ${aVerifBasGauche} | valideBasGauche: ${valideBasGauche}`)
     }
-
-
     function coupGagnant(nombreGagnant, coup, symbole) {
-        if (coupGagnantHorizontal(nombreGagnant, coup,symbole)) return true;
+        if (coupGagnantHorizontal(nombreGagnant, coup, symbole)) return true;
         if (coupGagnantVertical(nombreGagnant, coup, symbole)) return true;
         if (coupGagnantDiagonaleGauche(nombreGagnant, coup, symbole)) return true;
-        if(coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole)) return true;
+        if (coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole)) return true;
         return false;
     }
 
+    function gameListener(sizeCanvas, nombreCase) {
+        canvas.addEventListener('click', function (e) {
+            //Récupération des coordonnées de la sourie
+            sizeCase = sizeCanvas/nombreCase;
+            let x = Math.ceil(e.offsetX / sizeCase) * sizeCase - sizeCase;
+            let y = Math.ceil(e.offsetY / sizeCase) * sizeCase - sizeCase;
+            // console.log(`${x / 100} et ${y / 100}`);
+       
+            //Vérifier si la case a été joué | 
+            ligne = y / sizeCase;
+            colonne = x / sizeCase;
+            if (!casePlayed(matrice[ligne][colonne])) {
+                //Jouer le tour
+                if (tour == 1) {
+                    matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
+                    drawX(x, y, caseWidth, caseHeight)
+                    if (coupGagnant(4, [colonne, ligne], 'X')) {
+                        tour = 0;
+                        alert('Le joueur 1 a gagné');
+                    }
+                    else {
+                        tour = 2;
+                    }
+
+                    //ifCoupGagnant tour = 0 sinon tour = 2
+
+                }
+                else if (tour == 2) {
+                    matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
+                    drawCircle(x, y, caseWidth);
+                    if (coupGagnant(4, [colonne, ligne], 'O')) {
+                        tour = 0;
+                        alert('Le joueur 2 a gagné');
+                    }
+                    else {
+                        tour = 1;
+                    }
+                }
+            }
+            //console.log(matrice);
+        });
+    }
+
+
+
     tour = 1;
 
-    createMatrice(5, 5);
-    //matrice[0].length)
-    canvas.addEventListener('click', function (e) {
-        //Récupération des coordonnées de la sourie
-        let x = Math.ceil(e.offsetX / 100) * 100 - 100;
-        let y = Math.ceil(e.offsetY / 100) * 100 - 100;
-        // console.log(`${x / 100} et ${y / 100}`);
-        //Vérifier si la case a été joué | 
-        ligne = y / 100;
-        colonne = x / 100;
-        if (!casePlayed(matrice[ligne][colonne])) {
-            //Jouer le tour
-            if (tour == 1) {
-                matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
-                drawX(x, y, caseWidth, caseHeight)
-                if (coupGagnant(4, [colonne, ligne], 'X')) {
-                    tour = 0;
-                    alert('Le joueur 1 a gagné');
-                }
-                else {
-                    tour = 2;
-                }
-
-                //ifCoupGagnant tour = 0 sinon tour = 2
-
-            }
-            else if (tour == 2) {
-                matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
-                drawCircle(x, y, caseWidth);
-                if (coupGagnant(4, [colonne, ligne], 'O')) {
-                    tour = 0;
-                    alert('Le joueur 2 a gagné');
-                }
-                else {
-                    tour = 1;
-                }
-            }
-        }
-        console.log(matrice);
-    });
-
-
-
-    //Case {0:0}
-
-    //Case {1:0}
-
-    drawLimit(canvas, 5, 5);
-
-    //drawRect(50, 50, 102, 102, 'blue');
-
-
-    //Ecouteurs d'évenements
-    function nouvellePartie() {
-
+    function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas, nombreCase) {
+        //Vérifier que les joueurs existent
+        //Vérifier que sizeCanvas/nombreCase est un facteur de 100
+        createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
+        createMatrice(nombreCase, nombreCase);
+        drawLimit(canvas, nombreCase, nombreCase);
+        gameListener(sizeCanvas, nombreCase);
 
     }
+    //createCanvas('canvasJeu', 500, 500, 'rgb(248,241,241)');
+    nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)', 5);
+
+
+
+
 
 </script>
 
