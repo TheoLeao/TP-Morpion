@@ -445,8 +445,7 @@
         if (coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole)) return true;
         return false;
     }
-
-    function gameListener(sizeCanvas, nombreCase) {
+    function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant) {
         canvas.addEventListener('click', function (e) {
             //Récupération des coordonnées de la sourie
             sizeCase = sizeCanvas/nombreCase;
@@ -462,7 +461,7 @@
                 if (tour == 1) {
                     matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
                     drawX(x, y, caseWidth, caseHeight)
-                    if (coupGagnant(4, [colonne, ligne], 'X')) {
+                    if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'X')) {
                         tour = 0;
                         alert('Le joueur 1 a gagné');
                     }
@@ -476,7 +475,7 @@
                 else if (tour == 2) {
                     matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
                     drawCircle(x, y, caseWidth);
-                    if (coupGagnant(4, [colonne, ligne], 'O')) {
+                    if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'O')) {
                         tour = 0;
                         alert('Le joueur 2 a gagné');
                     }
@@ -493,17 +492,17 @@
 
     tour = 1;
 
-    function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas, nombreCase) {
+    function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas, nombreCase, nombreSymboleGagnant) {
         //Vérifier que les joueurs existent
         //Vérifier que sizeCanvas/nombreCase est un facteur de 100
         createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
         createMatrice(nombreCase, nombreCase);
         drawLimit(canvas, nombreCase, nombreCase);
-        gameListener(sizeCanvas, nombreCase);
+        gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant);
 
     }
     //createCanvas('canvasJeu', 500, 500, 'rgb(248,241,241)');
-    nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)', 5);
+    nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)', 5, 2);
 
 
 
