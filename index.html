@@ -166,7 +166,7 @@
         if (!caseMatrice == '') return true;
         return false;
     }
-    function coupGagnantHorizontal(nombreGagnant, coup) {
+    function coupGagnantHorizontal(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
         aVerifDroite = aVerifGauche = 0;
@@ -184,19 +184,19 @@
             countColonne2--;
             aVerifGauche++;
         }
-        console.log(`à verif Gauche: ${aVerifGauche} | à verif Droite: ${aVerifDroite}`);
+        //console.log(`à verif Gauche: ${aVerifGauche} | à verif Droite: ${aVerifDroite}`);
         //Vérifier les cases à vérifier à droite 
         for (i = 1; i <= aVerifDroite; i++) {
             console.log(`vérification case ${colonne + i}:`)
             //Si la case suivante n'est pas valide
-            if (matrice[ligne][colonne + i] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne][colonne + i] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideADroite++;
             }
         }
@@ -204,14 +204,14 @@
         for (i = 1; i <= aVerifGauche; i++) {
             console.log(`vérification case ${colonne + i}:`)
             //Si la case suivante n'est pas valide
-            if (matrice[ligne][colonne - i] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne][colonne - i] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideAGauche++;
             }
         }
@@ -219,10 +219,10 @@
         if (valideAGauche + valideADroite == nombreGagnant - 1) {
             return true;
         }
-        console.log(`colonne: ${colonne} limit:${matrice[0].length - 1} | caseAVerifGauche: ${aVerifGauche} | case valide Gauche: ${valideAGauche} caseAVerifDroite = ${aVerifDroite} | valideADroite: ${valideADroite}`)
+        //console.log(`colonne: ${colonne} limit:${matrice[0].length - 1} | caseAVerifGauche: ${aVerifGauche} | case valide Gauche: ${valideAGauche} caseAVerifDroite = ${aVerifDroite} | valideADroite: ${valideADroite}`)
     }
 
-    function coupGagnantVertical(nombreGagnant, coup) {
+    function coupGagnantVertical(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
 
@@ -243,14 +243,14 @@
 
         //Vérifier les coups gagnents en bas de la position joué
         for (i = 1; i <= aVerifBas; i++) {
-            if (matrice[ligne + i][colonne] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne + i][colonne] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideEnBas++;
             }
         }
@@ -259,14 +259,14 @@
         for (i = 1; i <= aVerifHaut; i++) {
             console.log(`vérification case ${colonne + i}:`)
             //Si la case suivante n'est pas valide
-            if (matrice[ligne - i][colonne] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne - i][colonne] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideEnHaut++;
             }
         }
@@ -279,7 +279,7 @@
         //console.log(`ligne: ${ligne} limit:${matrice.length - 1} | caseAVerifHaut ${aVerifHaut} | case valide haut: ${valideEnHaut} caseAVerifBas = ${aVerifBas} | case valide bas: ${valideEnBas}`)
     }
 
-    function coupGagnantDiagonaleGauche(nombreGagnant, coup) {
+    function coupGagnantDiagonaleGauche(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
 
@@ -329,28 +329,28 @@
 
         //Vérifier les coups gagnants diagonale en HautAGauche de la position joué
         for (i = 1; i <= aVerifHautGauche; i++) {
-            if (matrice[ligne - i][colonne - i] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne - i][colonne - i] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideEnHautGauche++;
             }
         }
 
         //Vérifier les coups gagnants diagonale en BasGauche de la position joué
         for (i = 1; i <= aVerifBasDroit; i++) {
-            if (matrice[ligne + i][colonne + i] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne + i][colonne + i] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideEnBasDroit++;
             }
         }
@@ -360,7 +360,7 @@
         //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautGauche ${aVerifHautGauche} | caseValidHautGauche: ${valideEnHautGauche} caseAVerifBasDroit: ${aVerifBasDroit} caseValideBasDroit: ${valideEnBasDroit}`)
     }
 
-    function coupGagnantDiagonaleDroite(nombreGagnant, coup) {
+    function coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole) {
         colonne = coup[0];
         ligne = coup[1];
 
@@ -409,28 +409,26 @@
 
         //Vérifier les coups gagnants diagonale en BasGauche de la position joué
         for (i = 1; i <= aVerifBasGauche; i++) {
-            if (matrice[ligne + i][colonne - i] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne + i][colonne - i] !== symbole) {
+                //console.log('pasegalX');
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
+                //console.log('egalX');
                 valideBasGauche++;
             }
         }
 
         //Vérifier les coups gagnants diagonale en HautDroite de la position joué
         for (i = 1; i <= aVerifHautDroite; i++) {
-            if (matrice[ligne - i][colonne + i] !== 'X') {
-                console.log('pasegalX');
+            if (matrice[ligne - i][colonne + i] !== symbole) {
                 //Arrêter de parcourir
                 break;
             }
             //Sinon, ajouter 1 à valideADroite
             else {
-                console.log('egalX');
                 valideHautDroite++;
             }
         }
@@ -439,15 +437,15 @@
             return true;
         }
 
-        console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautDroit: ${aVerifHautDroite} | valideHautDroite: ${valideHautDroite} caseAVerifBasGauche: ${aVerifBasGauche} | valideBasGauche: ${valideBasGauche}`)
+        //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautDroit: ${aVerifHautDroite} | valideHautDroite: ${valideHautDroite} caseAVerifBasGauche: ${aVerifBasGauche} | valideBasGauche: ${valideBasGauche}`)
     }
 
 
-    function coupGagnant(nombreGagnant, coup) {
-        if (coupGagnantHorizontal(nombreGagnant, coup)) return true;
-        if (coupGagnantVertical(nombreGagnant, coup)) return true;
-        if (coupGagnantDiagonaleGauche(nombreGagnant, coup)) return true;
-        if(coupGagnantDiagonaleDroite(nombreGagnant, coup)) return true;
+    function coupGagnant(nombreGagnant, coup, symbole) {
+        if (coupGagnantHorizontal(nombreGagnant, coup,symbole)) return true;
+        if (coupGagnantVertical(nombreGagnant, coup, symbole)) return true;
+        if (coupGagnantDiagonaleGauche(nombreGagnant, coup, symbole)) return true;
+        if(coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole)) return true;
         return false;
     }
 
@@ -468,8 +466,7 @@
             if (tour == 1) {
                 matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
                 drawX(x, y, caseWidth, caseHeight)
-                coupGagnantVertical(4, [colonne, ligne]);
-                if (coupGagnant(4, [colonne, ligne])) {
+                if (coupGagnant(4, [colonne, ligne], 'X')) {
                     tour = 0;
                     alert('Le joueur 1 a gagné');
                 }
@@ -483,7 +480,13 @@
             else if (tour == 2) {
                 matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
                 drawCircle(x, y, caseWidth);
-                tour = 1;
+                if (coupGagnant(4, [colonne, ligne], 'O')) {
+                    tour = 0;
+                    alert('Le joueur 2 a gagné');
+                }
+                else {
+                    tour = 1;
+                }
             }
         }
         console.log(matrice);
