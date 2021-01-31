@@ -357,13 +357,97 @@
         if (valideEnHautGauche + valideEnBasDroit == nombreGagnant - 1) {
             return true;
         }
-        console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautGauche ${aVerifHautGauche} | caseValidHautGauche: ${valideEnHautGauche} caseAVerifBasDroit: ${aVerifBasDroit} caseValideBasDroit: ${valideEnBasDroit}`)
+        //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautGauche ${aVerifHautGauche} | caseValidHautGauche: ${valideEnHautGauche} caseAVerifBasDroit: ${aVerifBasDroit} caseValideBasDroit: ${valideEnBasDroit}`)
     }
 
+    function coupGagnantDiagonaleDroite(nombreGagnant, coup) {
+        colonne = coup[0];
+        ligne = coup[1];
+
+        aVerifBas = aVerifGauche = aVerifDroite = aVerifHaut = aVerifHautDroite = aVerifBasGauche = 0;
+
+        countLigne1 = countLigne2 = ligne;
+        countColonne1 = countColonne2 = colonne;
+        valideHautDroite = valideBasGauche = 0;
+
+        //Récuperer le nombre de case à vérifier en haut de la position joué
+        while (countLigne1 > 0) {
+            countLigne1--;
+            aVerifHaut++;
+        }
+        //Récuperer le nombre de case à vérifier à droite de la position joué
+        while (countColonne1 < matrice[0].length - 1) {
+            countColonne1++;
+            aVerifDroite++;
+        }
+
+        //Récuperer combien de diagonale haut droite à  vérifier (hautDroite):
+        while (aVerifHaut > 0 && aVerifDroite > 0) {
+            aVerifHaut--;
+            aVerifDroite--;
+            aVerifHautDroite++;
+        }
+
+        //Récuperer le nombre de case à vérifier en bas de la position joué
+        while (countLigne2 < matrice.length - 1) {
+            countLigne2++;
+            aVerifBas++;
+        }
+
+        //Récupérer le nombre de case à vérifier à gauche
+        while (countColonne2 > 0) {
+            countColonne2--;
+            aVerifGauche++;
+        }
+
+        //Récuperer combien de diagonale haut gauche à  vérifier (hautDroite):
+        while (aVerifBas > 0 && aVerifGauche > 0) {
+            aVerifBas--;
+            aVerifGauche--;
+            aVerifBasGauche++;
+        }
+
+        //Vérifier les coups gagnants diagonale en BasGauche de la position joué
+        for (i = 1; i <= aVerifBasGauche; i++) {
+            if (matrice[ligne + i][colonne - i] !== 'X') {
+                console.log('pasegalX');
+                //Arrêter de parcourir
+                break;
+            }
+            //Sinon, ajouter 1 à valideADroite
+            else {
+                console.log('egalX');
+                valideBasGauche++;
+            }
+        }
+
+        //Vérifier les coups gagnants diagonale en HautDroite de la position joué
+        for (i = 1; i <= aVerifHautDroite; i++) {
+            if (matrice[ligne - i][colonne + i] !== 'X') {
+                console.log('pasegalX');
+                //Arrêter de parcourir
+                break;
+            }
+            //Sinon, ajouter 1 à valideADroite
+            else {
+                console.log('egalX');
+                valideHautDroite++;
+            }
+        }
+
+        if (valideHautDroite + valideBasGauche == nombreGagnant - 1) {
+            return true;
+        }
+
+        console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautDroit: ${aVerifHautDroite} | valideHautDroite: ${valideHautDroite} caseAVerifBasGauche: ${aVerifBasGauche} | valideBasGauche: ${valideBasGauche}`)
+    }
+
+
     function coupGagnant(nombreGagnant, coup) {
-        //if (coupGagnantHorizontal(nombreGagnant, coup)) return true;
-        //if (coupGagnantVertical(nombreGagnant, coup)) return true;
-        if(coupGagnantDiagonaleGauche(nombreGagnant, coup)) return true;
+        if (coupGagnantHorizontal(nombreGagnant, coup)) return true;
+        if (coupGagnantVertical(nombreGagnant, coup)) return true;
+        if (coupGagnantDiagonaleGauche(nombreGagnant, coup)) return true;
+        if(coupGagnantDiagonaleDroite(nombreGagnant, coup)) return true;
         return false;
     }
 
