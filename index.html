@@ -55,12 +55,16 @@
                                                 jouer. </strike>
                                     </li>
                                     <li>
-                                        3° Si un joueur aligne 4 ronds ou 4 carrés, un message Gagné apparait à côté de
-                                        son
-                                        nom, son score augmente de 1, le jeu est bloqué et deux boutons apparaissent
-                                        'Rejouer"
-                                        et "Nouvelle
-                                        partie".
+                                        <strike>
+                                            3° Si un joueur aligne 4 ronds ou 4 carrés, un message Gagné apparait à côté
+                                            de
+                                            son
+                                            nom, son score augmente de 1, le jeu est bloqué et deux boutons apparaissent
+                                            'Rejouer"
+                                            et "Nouvelle
+                                            partie".
+                                        </strike>
+
                                     </li>
 
                                     <li>
@@ -104,18 +108,37 @@
                 <div>
 
 
-                    <label for="nomJoueur1" class="form-label">Joueur n°1:</span></label>
+                    <label for="nomJoueur1" class="form-label mb-2 mt-2">Joueur n°1:</span></label>
                     <div id="alertWinJoueur1" class="" role="alert"></div>
                     <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required
                         value="Théo">
-                    <label for="nomJoueur2" class="form-label">Joueur n°2:</label>
+                    <label for="nomJoueur2" class="form-label mb-2 mt-2">Joueur n°2:</label>
                     <div id="alertWinJoueur2" class="" role="alert"></div>
                     <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required
                         value="Antoine">
+
+                    <div class="card mt-4 mb-2">
+                        <div class="card-body">
+                            <p><u>Personnaliser la partie:</u></p>
+                            <label for="inputRange_nombreDeCase" class="form-label">Nombre de case du morpion X et
+                                Y:</label>
+                            <label id="label_nombreCase"><b>5</b></label>
+                            <input id="inputRange_nombreDeCase" type="range" class="form-range" min="3" max="9"
+                                step="1" value="5">
+
+                            <label for="inputRange_nombreDeCaseGagnante" class="form-label">Nombre de case à aligner
+                                pour gagner:</label>
+                            <label id="label_nombreCaseGagnante"><b>4</b></label>
+                            <input id="inputRange_nombreDeCaseGagnante" type="range" class="form-range" min="3" max="8"
+                                step="1" value="4">
+
+
+                        </div>
+                    </div>
                 </div>
 
 
-                <button class="btn btn-secondary btn-sm" disabled>Rejouer</button>
+                <button id="btnRejouer" class="btn btn-secondary btn-sm" disabled>Rejouer</button>
                 <button id="btnNouvellePartie" class="btn btn-success">Nouvelle partie</button>
             </div>
 
@@ -126,6 +149,17 @@
 </body>
 <script src="js/script.js"></script>
 <script>
+    //Actualiser le label de inputRange nombre case au changement de sa valeur
+    document.querySelector('#inputRange_nombreDeCase').addEventListener('input', function () {
+        document.querySelector('#label_nombreCase').innerHTML = '';
+        document.querySelector('#label_nombreCase').innerHTML = `<b>${this.value}</b>`;
+    });
+
+    //Actualiser le label de inputRange nombre de case gagnante au changement de sa valeur
+    document.querySelector('#inputRange_nombreDeCaseGagnante').addEventListener('input', function () {
+        document.querySelector('#label_nombreCaseGagnante').innerHTML = '';
+        document.querySelector('#label_nombreCaseGagnante').innerHTML = `<b>${this.value}</b>`;
+    });
 
     //Fonctions
     function createCanvas(idCanvas, width, height, backgroundColor) {
@@ -485,7 +519,6 @@
         if (coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole)) return true;
         return false;
     }
-
     function actualiserLabelJoueur(idJoueur, nomJoueur1, nomJoueur2) {
         if (idJoueur == 1) {
             document.querySelector('label[for="nomJoueur1"]').innerHTML = `Joueur n°1: <b>${nomJoueur1}</b> <<<<`;
@@ -509,12 +542,13 @@
             // console.log(`${x / 100} et ${y / 100}`);
 
             //Vérifier si la case a été joué | 
-            ligne = y / sizeCase;
-            colonne = x / sizeCase;
+            ligne = Math.round(y / sizeCase);
+            colonne = Math.round(x / sizeCase);
             if (!casePlayed(matrice[ligne][colonne])) {
                 //Jouer le tour
                 if (tour == 1) {
                     matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
+                    console.log(matrice);
                     drawX(x, y, caseWidth, caseHeight)
                     if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'X')) {
                         tour = 0;
@@ -524,15 +558,17 @@
                         document.getElementById('alertWinJoueur1').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur1').innerHTML = `Ce joueur remporte la partie`;
                         window.setTimeout(function () {
-                            $(".alert").fadeTo(500, 0).slideUp(500, function () {                        
+                            $(".alert").fadeTo(500, 0).slideUp(500, function () {
                             });
                             //Supprimer le texte 1 seconde après
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 document.getElementById('alertWinJoueur1').innerHTML = '';
-                            },1000)
-                        
+                            }, 1000)
+
                         }, 2000);
-                        
+                        //Permettre de cliquer sur le bouton rejouer
+                        document.querySelector('#btnRejouer').removeAttribute('disabled');
+
                     }
                     else {
                         tour = 2;
@@ -547,21 +583,23 @@
                     drawCircle(x, y, caseWidth);
                     if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'O')) {
                         tour = 0;
-                        
+
                         //Ajouter un point au joueur 1
                         game.addPoint(2);
                         //Afficher et masquer l'alert pour dire que le joueur a gagné
                         document.getElementById('alertWinJoueur2').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur2').innerHTML = `Ce joueur remporte la partie`;
                         window.setTimeout(function () {
-                            $(".alert").fadeTo(500, 0).slideUp(500, function () {                        
+                            $(".alert").fadeTo(500, 0).slideUp(500, function () {
                             });
                             //Supprimer le texte 1 seconde après
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 document.getElementById('alertWinJoueur2').innerHTML = '';
-                            },1000)
-                        
+                            }, 1000)
+
                         }, 2000);
+                        //Permettre de cliquer sur le bouton rejouer
+                        document.querySelector('#btnRejouer').removeAttribute('disabled')
 
                     }
                     else {
@@ -601,37 +639,45 @@
             if (joueur == 2) this.joueur2.score++;
         }
     }
+
     function createGameObject(joueur1, joueur2, matrice) {
         game = new Game(joueur1, joueur2, matrice);
         game.addPoint(2);
     }
-    function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas, nombreCase, nombreSymboleGagnant) {
+    function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas) {
 
         //Joueurs
         let nomJoueur1 = document.querySelector('#nomJoueur1').value;
         let nomJoueur2 = document.querySelector('#nomJoueur2').value;
-
+        var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
+        var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
+        alert(`symbole gagnant: ${nombreSymboleGagnant} | nombreCase: ${nombreCase}`);
         //Vérifier le joueur 1
         if (nomJoueur1 !== undefined && nomJoueur1 !== '' && nomJoueur1.length >= 2) {
             //Vérifier le joueur 2
             if (nomJoueur2 !== undefined && nomJoueur2 !== '' && nomJoueur2.length >= 1) {
+                if (nombreSymboleGagnant < nombreCase) {
+                    createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
+                    createMatrice(nombreCase, nombreCase);
+                    drawLimit(canvas, nombreCase, nombreCase);
+                    tour = 1;
 
-                createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
-                createMatrice(nombreCase, nombreCase);
-                drawLimit(canvas, nombreCase, nombreCase);
-                tour = 1;
+                    createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
 
-                createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
+                    //Ajouter les noms au label
+                    document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
+                    document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
 
-                //Ajouter les noms au label
-                document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
-                document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
+                    actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
 
-                actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
+                    gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
 
-                gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
-
-                console.log(game);
+                    console.log(game);
+                }
+                else{
+                    alert(`Nombre symbole gagnant superieur à nombre de case ${nombreSymboleGagnant} > ${nombreCase}`);
+                }
+                
 
             }
             else {
@@ -651,7 +697,14 @@
 
 
     document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
-        nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)', 5, 2);
+        nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)');
+    })
+    document.querySelector('#btnRejouer').addEventListener('click', function () {
+        //Re-bloquer l'accès au bouton rejouer
+        document.querySelector('#btnRejouer').setAttribute('disabled', 'disabled');
+
+        createMatrice(nombreCase, nombreCase);
+        drawLimit(canvas, nombreCase, nombreCase);
     })
 
     /* window.setTimeout(function() {
