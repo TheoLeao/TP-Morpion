@@ -15,61 +15,101 @@
             width: 100%;
         }
     </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div class="container">
         <div class="consigne">
-            <h4>Consigne: TP : Réalisation d'un jeu de morpion 5x5. Pour gagner il faudra aligner quatre carrés
-                ou quatre ronds.</h4>
-            <ul>
-                <li> 1° Pour jouer, il faudra impérativement que les noms des deux joueurs soient saisis.</li>
-                <li>
-                    2° Les joueurs jouent alternativement. Le symbole <<<<< indique qui doit jouer. </li>
-                <li>
-                    3° Si un joueur aligne 4 ronds ou 4 carrés, un message Gagné apparait à côté de son
-                    nom, son score augmente de 1, le jeu est bloqué et deux boutons apparaissent 'Rejouer" et "Nouvelle
-                    partie".
-                </li>
 
-                <li>
-                    4° En cliquant sur Rejouer les deux même joueurs peuvent refaire une partie (le jeu
-                    précédent est effacé et les deux boutons sont masqués)
-                </li>
-                <li>
-                    5° En cliquant sur Nouvelle partie les noms et les scores sont effacés. Les deux
-                    boutons sont masqués.
-                </li>
-                <li>
-                    6° Chaque fois qu'un score évolue, les noms et les scores sont enregistrés en
-                    localStorage.
-                </li>
-                <li>
-                    7° Au démarrage d'une partie dans une nouvelle fenêtre du navigateur, si deux noms
-                    et deux scores sont enregistrés dans le localStorage, ils sont alors affichés avec les
-                    deux boutons 'Rejouer" et "Nouvelle partie".
-                </li>
-                <li>
-                    8° Lorsque 25 coups ont été joués sans réussir à aligner 4 ronds ou 4 carrés, le
-                    message "Partie nulle" s'affiche, la partie est bloquée et deux boutons 'Rejouer" et
-                    "Nouvelle partie" sont rendus visibles.
-                </li>
-            </ul>
+            <h1>Consigne: TP : Réalisation d'un jeu de morpion 5x5. Pour gagner il faudra aligner quatre carrés
+                ou quatre ronds.</h4>
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Cliquez pour voir la consigne
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul>
+                                    <li> <strike>1° Pour jouer, il faudra impérativement que les noms des deux joueurs
+                                            soient
+                                            saisis.</strike></li>
+                                    <li>
+                                        2° Les joueurs jouent alternativement. Le symbole <<<<< indique qui doit jouer.
+                                            </li>
+                                    <li>
+                                        3° Si un joueur aligne 4 ronds ou 4 carrés, un message Gagné apparait à côté de
+                                        son
+                                        nom, son score augmente de 1, le jeu est bloqué et deux boutons apparaissent
+                                        'Rejouer"
+                                        et "Nouvelle
+                                        partie".
+                                    </li>
+
+                                    <li>
+                                        4° En cliquant sur Rejouer les deux même joueurs peuvent refaire une partie (le
+                                        jeu
+                                        précédent est effacé et les deux boutons sont masqués)
+                                    </li>
+                                    <li>
+                                        5° En cliquant sur Nouvelle partie les noms et les scores sont effacés. Les deux
+                                        boutons sont masqués.
+                                    </li>
+                                    <li>
+                                        6° Chaque fois qu'un score évolue, les noms et les scores sont enregistrés en
+                                        localStorage.
+                                    </li>
+                                    <li>
+                                        7° Au démarrage d'une partie dans une nouvelle fenêtre du navigateur, si deux
+                                        noms
+                                        et deux scores sont enregistrés dans le localStorage, ils sont alors affichés
+                                        avec les
+                                        deux boutons 'Rejouer" et "Nouvelle partie".
+                                    </li>
+                                    <li>
+                                        8° Lorsque 25 coups ont été joués sans réussir à aligner 4 ronds ou 4 carrés, le
+                                        message "Partie nulle" s'affiche, la partie est bloquée et deux boutons
+                                        'Rejouer" et
+                                        "Nouvelle partie" sont rendus visibles.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
         <div class="jeu">
             <div>
                 <canvas id="canvasJeu" width="500" height="500"></canvas>
             </div>
             <div class="infoJeu">
-                <h2>Joueurs</h2>
+                <h2>Paramètre de la partie</h2>
                 <div>
-                    <input id="nomJoueur1" type="text" placeholder="Nom joueur 1">
-                    <input id="nomJoueur2" type="text" placeholder="Nom joueur 2">
+
+
+                    <label for="nomJoueur1" class="form-label">Joueur n°1:</span></label>
+                    <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required value="Théo">
+                    <label for="nomJoueur2" class="form-label">Joueur n°2:</label>
+                    <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required value="Antoine">
                 </div>
 
 
-                <button disabled>Rejouer</button>
-                <button id="btnNouvellePartie">Nouvelle partie</button>
+                <button class="btn btn-secondary btn-sm" disabled>Rejouer</button>
+                <button id="btnNouvellePartie" class="btn btn-success">Nouvelle partie</button>
             </div>
 
 
@@ -79,13 +119,8 @@
 </body>
 <script src="js/script.js"></script>
 <script>
-    //Joueurs
-    let nomJoueur1 = document.querySelector('#nomJoueur1');
-    let nomJoueur2 = document.querySelector('#nomJoueur2');
 
-    //Canvas
-
-
+    //Fonctions
     function createCanvas(idCanvas, width, height, backgroundColor) {
         canvas = document.querySelector(`#${idCanvas}`);
         width = canvas.width = width;
@@ -94,8 +129,6 @@
         ctx.fillStyle = `${backgroundColor}`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    //createCanvas('canvasJeu', 500, 500, 'rgb(248,241,241)');
-    //Fonctions
     function drawX(originX, originY, size) {
         padding = 10;
         ctx.beginPath(); // Début du chemin
@@ -445,14 +478,29 @@
         if (coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole)) return true;
         return false;
     }
-    function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant) {
+    
+    function actualiserLabelJoueur(idJoueur, nomJoueur1, nomJoueur2){
+        if(idJoueur == 1){
+            document.querySelector('label[for="nomJoueur1"]').innerHTML = `Joueur n°1: <b>${nomJoueur1}</b> <<<<`; 
+            document.querySelector('label[for="nomJoueur2"]').innerHTML = `Joueur n°2: <b>${nomJoueur2}</b> `;
+            console.log(document.querySelector('label[for="nomJoueur1"]'));
+            console.log('actualisé');
+        }
+        if(idJoueur == 2){
+            document.querySelector('label[for="nomJoueur1"]').innerHTML = `Joueur n°1: <b>${nomJoueur1}</b> `; 
+            document.querySelector('label[for="nomJoueur2"]').innerHTML = `Joueur n°2: <b>${nomJoueur2}</b> <<<<`; 
+            console.log(document.querySelector('label[for="nomJoueur2"]').innerHTML);
+        }
+    }
+
+    function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2) {
         canvas.addEventListener('click', function (e) {
             //Récupération des coordonnées de la sourie
-            sizeCase = sizeCanvas/nombreCase;
+            sizeCase = sizeCanvas / nombreCase;
             let x = Math.ceil(e.offsetX / sizeCase) * sizeCase - sizeCase;
             let y = Math.ceil(e.offsetY / sizeCase) * sizeCase - sizeCase;
             // console.log(`${x / 100} et ${y / 100}`);
-       
+
             //Vérifier si la case a été joué | 
             ligne = y / sizeCase;
             colonne = x / sizeCase;
@@ -467,6 +515,7 @@
                     }
                     else {
                         tour = 2;
+                        actualiserLabelJoueur(2, nomJoueur1, nomJoueur2);
                     }
 
                     //ifCoupGagnant tour = 0 sinon tour = 2
@@ -481,28 +530,91 @@
                     }
                     else {
                         tour = 1;
+                        actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
+                        
                     }
                 }
             }
             //console.log(matrice);
         });
     }
-
-
-
-    tour = 1;
-
+    function createObjectGame(nomJoueur1, nomJoueur2) {
+        partie = {
+            joueurs: [{
+                nom: 'Théo',
+                signe: 'X',
+                score: 2,
+            },
+            {
+                nom: 'Théo',
+                signe: 'O',
+                score: 2
+            }],
+            matrice: [],
+        }
+    }
+    
+    class Game {
+        constructor(joueur1, joueur2,  matrice) {
+            this.joueur1 = joueur1;
+            this.joueur2 = joueur2;
+            this.matrice = matrice;
+        }
+        addPoint(joueur){
+            if(joueur == 1) this.joueur1.score++;
+            if(joueur == 2) this.joueur2.score++;          
+        }
+    }
+    function createGameObject(joueur1, joueur2, matrice){
+        game = new Game(joueur1, joueur2 , matrice);
+        game.addPoint(2);
+    }
     function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas, nombreCase, nombreSymboleGagnant) {
-        //Vérifier que les joueurs existent
-        //Vérifier que sizeCanvas/nombreCase est un facteur de 100
-        createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
-        createMatrice(nombreCase, nombreCase);
-        drawLimit(canvas, nombreCase, nombreCase);
-        gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant);
+
+        //Joueurs
+        let nomJoueur1 = document.querySelector('#nomJoueur1').value;
+        let nomJoueur2 = document.querySelector('#nomJoueur2').value;
+
+        //Vérifier le joueur 1
+        if (nomJoueur1 !== undefined && nomJoueur1 !== '' && nomJoueur1.length >= 2) {
+            //Vérifier le joueur 2
+            if (nomJoueur2 !== undefined && nomJoueur2 !== '' && nomJoueur2.length >= 1) {
+
+                createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
+                createMatrice(nombreCase, nombreCase);
+                drawLimit(canvas, nombreCase, nombreCase);
+                tour = 1;
+                createGameObject({'nom': nomJoueur1, 'score': 0}, {'nom': nomJoueur2, 'score': 0}, matrice);
+                
+                //Ajouter les noms au label
+                document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`; 
+                document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`; 
+
+                gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
+                
+                console.log(game);
+
+            }
+            else {
+                alert('joueur 2 pas ok')
+                console.log(nomJoueur1)
+            }
+
+        }
+        else {
+            alert('joueur 1 pas ok')
+            console.log(nomJoueur1)
+        }
+
+
 
     }
-    //createCanvas('canvasJeu', 500, 500, 'rgb(248,241,241)');
-    nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)', 5, 2);
+
+
+    document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
+        nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)', 5, 2);
+    })
+
 
 
 
