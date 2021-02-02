@@ -635,7 +635,7 @@
                             //Supprimer le texte 1 seconde après
                             setTimeout(function () {
                                 document.getElementById('alertWinJoueur2').innerHTML = '';
-                                //Renitialiser l'état à 0 de l'alert
+                                //Renitialiser l'état de l'alert
                                 setTimeout(function () {
                                     document.getElementById('alertWinJoueur2').removeAttribute('style');
                                     document.getElementById('alertWinJoueur2').classList = '';
@@ -769,6 +769,11 @@
         //Afficher les scores
         actualiserScores(game.joueur1.score, game.joueur2.score);
 
+        //Permettre de cliquer sur rejouer
+        document.querySelector('#btnRejouer').removeAttribute('disabled');
+
+
+
     }
 
     document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
@@ -782,13 +787,26 @@
         var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
         var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
 
+
+
+
+        //Si on revient sur la page, reintialiser quelques paramètres
+        if (typeof canvas == 'undefined'){
+            createCanvas('canvasJeu', 400, 400)
+            gameListener(400, nombreCase, nombreSymboleGagnant, game.joueur1.nom, game.joueur1.nom)
+        };
+        drawLimit(canvas, nombreCase, nombreCase, 'rgb(248,241,241)');
         //Creer la nouvelle matrice
         createMatrice(nombreCase, nombreCase);
+        if (typeof tour == 'undefined') tour = 1;
 
         //Redessiner par-dessus
-        drawLimit(canvas, nombreCase, nombreCase, 'rgb(248,241,241)');
+
 
         //Faire commencer l'autre joueur
+
+
+
         if (tour == 0) tour = 1;
 
         alert(tour);
