@@ -47,39 +47,40 @@
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <ul>
-                                    <li> <strike>1° Pour jouer, il faudra impérativement que les noms des deux joueurs
-                                            soient
-                                            saisis.</strike></li>
+                                    <li> 1° Pour jouer, il faudra impérativement que les noms des deux joueurs
+                                        soient
+                                        saisis. </li>
                                     <li>
-                                        <strike>2° Les joueurs jouent alternativement. Le symbole <<<<< indique qui doit
-                                                jouer. </strike>
-                                    </li>
+                                        2° Les joueurs jouent alternativement. Le symbole <<<<< indique qui doit jouer.
+                                            </li>
                                     <li>
-                                        <strike>
-                                            3° Si un joueur aligne 4 ronds ou 4 carrés, un message Gagné apparait à côté
-                                            de
-                                            son
-                                            nom, son score augmente de 1, le jeu est bloqué et deux boutons apparaissent
-                                            'Rejouer"
-                                            et "Nouvelle
-                                            partie".
-                                        </strike>
+
+                                        3° Si un joueur aligne 4 ronds ou 4 carrés, un message Gagné apparait à côté
+                                        de
+                                        son
+                                        nom, son score augmente de 1, le jeu est bloqué et deux boutons apparaissent
+                                        'Rejouer"
+                                        et "Nouvelle
+                                        partie".
+
 
                                     </li>
 
                                     <li>
-                                        4° En cliquant sur Rejouer les deux même joueurs peuvent refaire une partie (le
+                                        4° En cliquant sur Rejouer les deux même joueurs peuvent refaire une
+                                        partie (le
                                         jeu
-                                        précédent est effacé et les deux boutons sont masqués)
+                                        précédent est effacé >et les deux boutons sont masqués)
                                     </li>
                                     <li>
                                         5° En cliquant sur Nouvelle partie les noms et les scores sont effacés. Les deux
-                                        boutons sont masqués.
+                                        boutons sont masqués. (j'ai fais le choix de toujours laissé le bouton "nouvelle
+                                        partie" si on souhaite abandonner une partie en cours)
                                     </li>
                                     <li>
-                                        <strike>6° Chaque fois qu'un score évolue, les noms et les scores sont
-                                            enregistrés en
-                                            localStorage.</strike>
+                                        6° Chaque fois qu'un score évolue, les noms et les scores sont
+                                        enregistrés en
+                                        localStorage.
                                     </li>
                                     <li>
                                         7° Au démarrage d'une partie dans une nouvelle fenêtre du navigateur, si deux
@@ -87,13 +88,24 @@
                                         et deux scores sont enregistrés dans le localStorage, ils sont alors affichés
                                         avec les
                                         deux boutons 'Rejouer" et "Nouvelle partie".
+
                                     </li>
                                     <li>
+
                                         8° Lorsque 25 coups ont été joués sans réussir à aligner 4 ronds ou 4 carrés, le
                                         message "Partie nulle" s'affiche, la partie est bloquée et deux boutons
                                         'Rejouer" et
                                         "Nouvelle partie" sont rendus visibles.
                                     </li>
+                                    <u>Améliorations apportés:</u>
+                                        <ul>
+                                            <li>Personnalisation du jeu possible: choisir le nombre de case du morpion et le nombre de coup gagnant</li>
+                                            <li>Optimisation de l'algorithme de vérification</li>
+                                            <li>Affichage d'alert dynamique</li>
+                                            <li>Intégration d'un style avec bootstrap 5.0</li>
+                                        </ul>
+                                    
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -140,7 +152,8 @@
                 </div>
 
 
-                <button id="btnRejouer" class="btn btn-secondary btn-sm" disabled>Rejouer</button>
+                <button id="btnRejouer" class="btn btn-secondary btn-sm" disabled
+                    style="display: none;">Rejouer</button>
                 <button id="btnNouvellePartie" class="btn btn-success">Nouvelle partie</button>
                 <div class="card mt-4 mb-2">
                     <div class="card-body">
@@ -560,8 +573,17 @@
         localStorage.setItem(nameVariable, JSON.stringify(newValue));
         //Actualiser le tableau score
     }
+    function showButtonPlayAgain(idButton) {
+        document.querySelector(`#${idButton}`).setAttribute('style', 'display:inline-block');
+
+    }
+    function hideButtonPlayAgain(idButton) {
+        document.querySelector(`#${idButton}`).setAttribute('style', 'display:none');
+    }
+    nombreCoup = 0;
     function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2) {
         canvas.addEventListener('click', function (e) {
+            nombreCoup++;
             //Récupération des coordonnées de la sourie
             sizeCase = sizeCanvas / nombreCase;
             let x = Math.ceil(e.offsetX / sizeCase) * sizeCase - sizeCase;
@@ -577,7 +599,6 @@
                     matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
                     console.log(matrice);
                     drawX(x, y, caseWidth, caseHeight)
-
                     if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'X')) {
                         tour = 0;
                         //Ajouter un point au joueur 1
@@ -604,12 +625,21 @@
 
                         }, 2000);
                         //Permettre de cliquer sur le bouton rejouer
-                        document.querySelector('#btnRejouer').removeAttribute('disabled');
+                        //document.querySelector('#btnRejouer').removeAttribute('disabled');
+                        showButtonPlayAgain('btnRejouer');
 
                     }
                     else {
-                        tour = 2;
-                        actualiserLabelJoueur(2, nomJoueur1, nomJoueur2);
+                        if (nombreCoup == nombreCase * nombreCase) {
+                            alert('égalité');
+
+                            tour = 0;
+                        }
+                        else {
+                            tour = 2;
+                            actualiserLabelJoueur(2, nomJoueur1, nomJoueur2);
+                        }
+
                     }
 
                     //ifCoupGagnant tour = 0 sinon tour = 2
@@ -644,7 +674,8 @@
 
                         }, 2000);
                         //Permettre de cliquer sur le bouton rejouer
-                        document.querySelector('#btnRejouer').removeAttribute('disabled')
+                        //document.querySelector('#btnRejouer').removeAttribute('disabled')
+                        showButtonPlayAgain('btnRejouer');
 
                     }
                     else {
@@ -672,7 +703,6 @@
             matrice: [],
         }
     }
-
     class Game {
         constructor(joueur1, joueur2, matrice) {
             this.joueur1 = joueur1;
@@ -717,7 +747,6 @@
 
 
 
-
                     gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
 
 
@@ -732,8 +761,9 @@
                     saveLocalStorage('game', game);
                     actualiserScores(game.joueur1.score, game.joueur2.score);
                     //Ajouter les noms au label
-
                     localStorage.setItem('game', JSON.stringify(game));
+
+                    hideButtonPlayAgain('btnRejouer')
 
 
                 }
@@ -778,7 +808,11 @@
 
     document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
         nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)');
+
     })
+    if (typeof game !== 'undefined') {
+        showButtonPlayAgain('btnRejouer');
+    }
     document.querySelector('#btnRejouer').addEventListener('click', function () {
         //Re-bloquer l'accès au bouton rejouer
         //document.querySelector('#btnRejouer').setAttribute('disabled', 'disabled');
@@ -791,22 +825,17 @@
 
 
         //Si on revient sur la page, reintialiser quelques paramètres
-        if (typeof canvas == 'undefined'){
+        if (typeof canvas == 'undefined') {
+            alert('tests')
             createCanvas('canvasJeu', 400, 400)
-            gameListener(400, nombreCase, nombreSymboleGagnant, game.joueur1.nom, game.joueur1.nom)
+            gameListener(400, nombreCase, nombreSymboleGagnant, game.joueur1.nom, game.joueur1.nom);
         };
         drawLimit(canvas, nombreCase, nombreCase, 'rgb(248,241,241)');
         //Creer la nouvelle matrice
         createMatrice(nombreCase, nombreCase);
         if (typeof tour == 'undefined') tour = 1;
 
-        //Redessiner par-dessus
-
-
-        //Faire commencer l'autre joueur
-
-
-
+        //Faire commencer l'autre joue
         if (tour == 0) tour = 1;
 
         alert(tour);
