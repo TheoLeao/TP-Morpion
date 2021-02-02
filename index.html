@@ -77,8 +77,7 @@
                                     </li>
                                     <li>
                                         5° En cliquant sur Nouvelle partie les noms et les scores sont effacés. Les deux
-                                        boutons sont masqués. (j'ai fais le choix de toujours laissé le bouton "nouvelle
-                                        partie" si on souhaite abandonner une partie en cours)
+                                        boutons sont masqués.
                                     </li>
                                     <li>
                                         6° Chaque fois qu'un score évolue, les noms et les scores sont
@@ -156,7 +155,7 @@
                 </div>
 
 
-                <button id="btnRejouer" class="btn btn-secondary btn-sm" disabled
+                <button id="btnRejouer" class="btn btn-secondary btn-sm"
                     style="display: none;">Rejouer</button>
                 <button id="btnNouvellePartie" class="btn btn-success">Nouvelle partie</button>
                 <div class="card mt-4 mb-2">
@@ -577,13 +576,14 @@
         localStorage.setItem(nameVariable, JSON.stringify(newValue));
         //Actualiser le tableau score
     }
-    function showButtonPlayAgain(idButton) {
+    function showButton(idButton) {
         document.querySelector(`#${idButton}`).setAttribute('style', 'display:inline-block');
 
     }
-    function hideButtonPlayAgain(idButton) {
+    function hideButton(idButton) {
         document.querySelector(`#${idButton}`).setAttribute('style', 'display:none');
     }
+    
     nombreCoup = 0;
     function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2) {
         canvas.addEventListener('click', function (e) {
@@ -630,12 +630,12 @@
                         }, 2000);
                         //Permettre de cliquer sur le bouton rejouer
                         //document.querySelector('#btnRejouer').removeAttribute('disabled');
-                        showButtonPlayAgain('btnRejouer');
+                        showButton('btnRejouer');
+                        showButton('btnNouvellePartie');
 
                     }
                     else {
                         //Vérifier l'égalité
-                        alert(nombreCoup)
                         if (nombreCoup == nombreCase * nombreCase) {
                             Swal.fire('Egalité, bien joué à vous deux');
                             tour = 0;
@@ -680,16 +680,15 @@
                         }, 2000);
                         //Permettre de cliquer sur le bouton rejouer
                         //document.querySelector('#btnRejouer').removeAttribute('disabled')
-                        showButtonPlayAgain('btnRejouer');
+                        showButton('btnRejouer');
 
                     }
                     else {
                         //Vérifier l'égalité
-                        alert(nombreCoup);
                         if (nombreCoup == nombreCase * nombreCase) {
                             Swal.fire('Egalité, bien joué à vous deux');
                             tour = 0;
-                            showButtonPlayAgain('btnRejouer');
+                            showButton('btnRejouer');
                         }
                         else {
                             tour = 1;
@@ -740,18 +739,17 @@
     }
 
     function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas) {
-
+        hideButton('btnNouvellePartie');
         //Joueurs
         let nomJoueur1 = document.querySelector('#nomJoueur1').value;
         let nomJoueur2 = document.querySelector('#nomJoueur2').value;
         var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
         var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
-        alert(`symbole gagnant: ${nombreSymboleGagnant} | nombreCase: ${nombreCase}`);
         //Vérifier le joueur 1
         if (nomJoueur1 !== undefined && nomJoueur1 !== '' && nomJoueur1.length >= 2) {
             //Vérifier le joueur 2
             if (nomJoueur2 !== undefined && nomJoueur2 !== '' && nomJoueur2.length >= 1) {
-                if (nombreSymboleGagnant < nombreCase) {
+                if (nombreSymboleGagnant <= nombreCase) {
                     createCanvas(idCanvas, sizeCanvas, sizeCanvas);
 
                     drawLimit(canvas, nombreCase, nombreCase, backgroundColorCanvas);
@@ -778,12 +776,17 @@
                     //Ajouter les noms au label
                     localStorage.setItem('game', JSON.stringify(game));
 
-                    hideButtonPlayAgain('btnRejouer')
+                    hideButton('btnRejouer')
+
 
 
                 }
                 else {
-                    alert(`Nombre symbole gagnant superieur à nombre de case ${nombreSymboleGagnant} > ${nombreCase}`);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Le nombre de symbole gagnant doit être supérieur ou égal au nombre de case du morpion!'
+                    })
                 }
 
 
@@ -820,8 +823,6 @@
         //Afficher les scores
         actualiserScores(game.joueur1.score, game.joueur2.score);
 
-        //Permettre de cliquer sur rejouer
-        document.querySelector('#btnRejouer').removeAttribute('disabled');
 
 
 
@@ -832,7 +833,7 @@
 
     })
     if (typeof game !== 'undefined') {
-        showButtonPlayAgain('btnRejouer');
+        showButton('btnRejouer');
     }
     document.querySelector('#btnRejouer').addEventListener('click', function () {
         //Re-bloquer l'accès au bouton rejouer
@@ -842,12 +843,14 @@
         var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
         var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
 
+        hideButton('btnRejouer');
+        hideButton('btnNouvellePartie');
+
 
 
 
         //Si on revient sur la page, reintialiser quelques paramètres
         if (typeof canvas == 'undefined') {
-            alert('tests')
             createCanvas('canvasJeu', 400, 400)
             gameListener(400, nombreCase, nombreSymboleGagnant, game.joueur1.nom, game.joueur1.nom);
         };
@@ -858,8 +861,6 @@
 
         //Faire commencer l'autre joue
         if (tour == 0) tour = 1;
-
-        alert(tour);
 
     });
 
