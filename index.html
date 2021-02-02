@@ -122,8 +122,6 @@
             <div class="infoJeu">
                 <h2>Paramètre de la partie</h2>
                 <div>
-
-
                     <label for="nomJoueur1" class="form-label mb-2 mt-2">Joueur n°1:</span></label>
                     <div id="alertWinJoueur1" class="" role="alert"></div>
                     <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required
@@ -132,7 +130,6 @@
                     <div id="alertWinJoueur2" class="" role="alert"></div>
                     <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required
                         value="Antoine">
-
                     <div class="card mt-4 mb-2">
                         <div class="card-body">
                             <p><u>Personnaliser la partie:</u></p>
@@ -141,22 +138,15 @@
                             <label id="label_nombreCase"><b>5</b></label>
                             <input id="inputRange_nombreDeCase" type="range" class="form-range" min="3" max="9" step="1"
                                 value="5">
-
                             <label for="inputRange_nombreDeCaseGagnante" class="form-label">Nombre de case à aligner
                                 pour gagner:</label>
                             <label id="label_nombreCaseGagnante"><b>4</b></label>
                             <input id="inputRange_nombreDeCaseGagnante" type="range" class="form-range" min="3" max="8"
                                 step="1" value="4">
-
-
                         </div>
                     </div>
-
                 </div>
-
-
-                <button id="btnRejouer" class="btn btn-secondary btn-sm"
-                    style="display: none;">Rejouer</button>
+                <button id="btnRejouer" class="btn btn-secondary btn-sm" style="display: none;">Rejouer</button>
                 <button id="btnNouvellePartie" class="btn btn-success">Nouvelle partie</button>
                 <div class="card mt-4 mb-2">
                     <div class="card-body">
@@ -174,17 +164,11 @@
                                     <th scope="row">Partie gagné</th>
                                     <td id="scoreJoueur1">0</td>
                                     <td id="scoreJoueur2">0</td>
-
                             </tbody>
                         </table>
-
-
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 </body>
@@ -201,7 +185,20 @@
         document.querySelector('#label_nombreCaseGagnante').innerHTML = `<b>${this.value}</b>`;
     });
 
-    //Fonctions
+    class Game {
+        constructor(joueur1, joueur2, matrice) {
+            this.joueur1 = joueur1;
+            this.joueur2 = joueur2;
+            this.matrice = matrice;
+        }
+        addPoint(joueur) {
+            if (joueur == 1) this.joueur1.score++;
+            if (joueur == 2) this.joueur2.score++;
+        }
+    }
+    /*
+        Définition des fonctions
+    */
     function createCanvas(idCanvas, width, height) {
         canvas = document.querySelector(`#${idCanvas}`);
         width = canvas.width = width;
@@ -210,11 +207,11 @@
     }
     function drawX(originX, originY, size) {
         padding = 10;
-        ctx.beginPath(); // Début du chemin
-        ctx.moveTo(originX, originY); // Le tracé part du point 50,50
-        ctx.lineTo(originX + size, originY + size); // Un segment est ajouté vers 200,200
-        ctx.moveTo(originX + size, originY); // Puis on saute jusqu'à 200,50
-        ctx.lineTo(originX, originY + size); // Puis on trace jusqu'à 50,200
+        ctx.beginPath();
+        ctx.moveTo(originX, originY);
+        ctx.lineTo(originX + size, originY + size);
+        ctx.moveTo(originX + size, originY);
+        ctx.lineTo(originX, originY + size);
         ctx.lineWidth = 7;
         ctx.strokeStyle = '#3FA7D6';
         ctx.lineCap = 'round';
@@ -224,52 +221,41 @@
     function drawCircle(originX, originY, size) {
         ctx.beginPath();
         ctx.lineWidth = "7";
-        ctx.strokeStyle = "#EE6352"
+        ctx.strokeStyle = "#EE6352";
         ctx.arc(originX + size / 2, originY + size / 2, size / 2 - 5, 0, 2 * Math.PI);
         ctx.stroke();
     }
     function drawRect(originX, originY, width, height, fillColor) {
-        ctx.beginPath();
-        ctx.strokeStyle = "#FFFFFF";
-        ctx.lineWidth = "1";
-        ctx.rect(originX, originY, width, height);
-        ctx.stroke();
-
+        ctx.beginPath(); ctx.strokeStyle = "#FFFFFF"; ctx.lineWidth = "1";
+        ctx.rect(originX, originY, width, height); ctx.stroke();
     }
     function drawLimit(canvas, nombreLigne, nombreColonne, backgroundColor) {
         if (nombreLigne != nombreColonne) return (error('Le nombre de ligne n\'est pas égale au nombre de colonne'));;
+        //Dessiner le fond du canvas
         ctx.fillStyle = `${backgroundColor}`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        //Récuperer taille du canvas
         canvasWidth = canvas.width;
         canvasHeight = canvas.height;
-        //Récuperer taille des cases
+
+        //Récuperer la taille des cases
         caseWidth = canvasWidth / nombreColonne;
         caseHeight = canvasHeight / nombreLigne;
 
-        //Tracer les lignes
         pair = true;
-        //Chaque ligne
+        //Pour chaque ligne
         for (i_line = 0; i_line <= nombreLigne; i_line++) {
-            //Chaque case
-            //console.log(`line ${i_line}`)
+            //Pour chaque case
             for (i_case = 0; i_case < nombreColonne; i_case++) {
                 if (pair) {
-                    //console.log(`--case ${i_case}`);
                     drawRect(caseWidth * i_case, caseWidth * i_line, caseWidth, caseHeight, '#F9FAFC');
-                    //drawX(caseWidth * i_case, caseHeight * i_line, caseWidth); //Test dessiné une croix 1 fois sur 2
                     pair = false;
                 }
                 else {
-                    //console.log(`--case ${i_case}`);
                     drawRect(caseWidth * i_case, caseWidth * i_line, caseWidth, caseHeight, '#F4F9FF');
-                    //drawCircle(caseWidth * i_case, caseHeight * i_line, caseWidth); //Test dessiné un cercle 1 fois sur 2
                     pair = true;
                 }
-
             }
         }
-
     }
     function createMatrice(nombreLigne, nombreColonne) {
         matrice = Array.from(
@@ -283,53 +269,30 @@
         return false;
     }
     function coupGagnantHorizontal(nombreGagnant, coup, symbole) {
+        /* Même fonctionnement que la fonction coupGagantVertical*/
         colonne = coup[0];
         ligne = coup[1];
         aVerifDroite = aVerifGauche = 0;
         countColonne1 = countColonne2 = colonne;
         valideADroite = valideAGauche = 0;
 
-        //Récupérer le nombre de case à vérifier à droite
         while (countColonne1 < matrice[0].length - 1) {
             countColonne1++;
             aVerifDroite++;
-            //console.log('+1')
         }
-        //Récupérer le nombre de case à vérifier à gauche
         while (countColonne2 > 0) {
             countColonne2--;
             aVerifGauche++;
         }
-        //console.log(`à verif Gauche: ${aVerifGauche} | à verif Droite: ${aVerifDroite}`);
-        //Vérifier les cases à vérifier à droite 
+
         for (i = 1; i <= aVerifDroite; i++) {
-            console.log(`vérification case ${colonne + i}:`)
-            //Si la case suivante n'est pas valide
-            if (matrice[ligne][colonne + i] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
-                break;
-            }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideADroite++;
-            }
+            if (matrice[ligne][colonne + i] !== symbole) { break; }
+            else { valideADroite++; }
         }
-        //Vérifier les cases à vérifier à gauche 
+
         for (i = 1; i <= aVerifGauche; i++) {
-            console.log(`vérification case ${colonne + i}:`)
-            //Si la case suivante n'est pas valide
-            if (matrice[ligne][colonne - i] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
-                break;
-            }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideAGauche++;
-            }
+            if (matrice[ligne][colonne - i] !== symbole) { break; }
+            else { valideAGauche++; }
         }
 
         if (valideAGauche + valideADroite == nombreGagnant - 1) {
@@ -345,211 +308,151 @@
         countLigne1 = countLigne2 = ligne;
         valideEnHaut = valideEnBas = 0;
 
-        //Récuperer le nombre de case à vérifier en bas de la position joué
+        //Récuperer le nombre de case à vérifier en bas de la position jouée
         while (countLigne2 < matrice.length - 1) {
             countLigne2++;
             aVerifBas++;
         }
-        //Récuperer le nombre de case à vérifier en haut de la position joué
+        //Récuperer le nombre de case à vérifier en haut de la position jouée
         while (countLigne1 > 0) {
             countLigne1--;
             aVerifHaut++;
         }
 
-        //Vérifier les coups gagnents en bas de la position joué
+        //Récuperer le nombre de case valide en bas de la position jouée
         for (i = 1; i <= aVerifBas; i++) {
-            if (matrice[ligne + i][colonne] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
-                break;
-            }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideEnBas++;
-            }
+            if (matrice[ligne + i][colonne] !== symbole) { break; }
+            else { valideEnBas++; }
         }
 
-        //Vérifier les cases à vérifier en haut de la position joué 
+        //Récuperer le nombre de case valide en haut de la position jouée
         for (i = 1; i <= aVerifHaut; i++) {
-            console.log(`vérification case ${colonne + i}:`)
-            //Si la case suivante n'est pas valide
-            if (matrice[ligne - i][colonne] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
-                break;
-            }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideEnHaut++;
-            }
+            if (matrice[ligne - i][colonne] !== symbole) { break; }
+            else { valideEnHaut++; }
         }
-
 
         if (valideEnBas + valideEnHaut == nombreGagnant - 1) {
             return true;
         }
-
         //console.log(`ligne: ${ligne} limit:${matrice.length - 1} | caseAVerifHaut ${aVerifHaut} | case valide haut: ${valideEnHaut} caseAVerifBas = ${aVerifBas} | case valide bas: ${valideEnBas}`)
     }
     function coupGagnantDiagonaleGauche(nombreGagnant, coup, symbole) {
+        /* Même fonctionnement que pour coupGagnantDiagonaleDroit*/
         colonne = coup[0];
         ligne = coup[1];
-
         aVerifBas = aVerifGauche = aVerifDroite = aVerifHaut = aVerifBasDroit = aVerifHautGauche = 0;
-
         countLigne1 = countLigne2 = ligne;
         countColonne1 = countColonne2 = colonne;
         valideEnHautGauche = valideEnBasDroit = 0;
 
-        //Récuperer le nombre de case à vérifier en haut de la position joué
         while (countLigne1 > 0) {
             countLigne1--;
             aVerifHaut++;
         }
-
-        //Récupérer le nombre de case à vérifier à gauche
         while (countColonne2 > 0) {
             countColonne2--;
             aVerifGauche++;
         }
 
-        //Récuperer le nombre de case à vérifier en bas de la position joué
         while (countLigne2 < matrice.length - 1) {
             countLigne2++;
             aVerifBas++;
         }
-        //Récupérer le nombre de case à vérifier à droite
+
         while (countColonne1 < matrice[0].length - 1) {
             countColonne1++;
             aVerifDroite++;
-            //console.log('+1')
         }
 
-        //Récuperer combien de diagonale à gauche vérifier (hautGauche):
         while (aVerifHaut > 0 && aVerifGauche > 0) {
             aVerifHaut--;
             aVerifGauche--;
             aVerifHautGauche++;
         }
 
-        //Récuperer combien de diagonale à droite vérifier (basDroite):
         while (aVerifBas > 0 && aVerifDroite > 0) {
             aVerifBas--;
             aVerifDroite--;
             aVerifBasDroit++;
         }
 
-        //Vérifier les coups gagnants diagonale en HautAGauche de la position joué
         for (i = 1; i <= aVerifHautGauche; i++) {
-            if (matrice[ligne - i][colonne - i] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
-                break;
-            }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideEnHautGauche++;
-            }
+            if (matrice[ligne - i][colonne - i] !== symbole) { break; }
+            else { valideEnHautGauche++; }
         }
 
         //Vérifier les coups gagnants diagonale en BasGauche de la position joué
         for (i = 1; i <= aVerifBasDroit; i++) {
-            if (matrice[ligne + i][colonne + i] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
-                break;
-            }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideEnBasDroit++;
-            }
+            if (matrice[ligne + i][colonne + i] !== symbole) { break; }
+            else { valideEnBasDroit++; }
         }
-        if (valideEnHautGauche + valideEnBasDroit == nombreGagnant - 1) {
-            return true;
-        }
+        if (valideEnHautGauche + valideEnBasDroit == nombreGagnant - 1) { return true; }
         //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautGauche ${aVerifHautGauche} | caseValidHautGauche: ${valideEnHautGauche} caseAVerifBasDroit: ${aVerifBasDroit} caseValideBasDroit: ${valideEnBasDroit}`)
     }
     function coupGagnantDiagonaleDroite(nombreGagnant, coup, symbole) {
+        //Initialisation des variables nécessaires
         colonne = coup[0];
         ligne = coup[1];
-
         aVerifBas = aVerifGauche = aVerifDroite = aVerifHaut = aVerifHautDroite = aVerifBasGauche = 0;
-
         countLigne1 = countLigne2 = ligne;
         countColonne1 = countColonne2 = colonne;
         valideHautDroite = valideBasGauche = 0;
 
-        //Récuperer le nombre de case à vérifier en haut de la position joué
+        //Récuperer le nombre de case à vérifier en haut de la position jouée
         while (countLigne1 > 0) {
             countLigne1--;
             aVerifHaut++;
         }
-        //Récuperer le nombre de case à vérifier à droite de la position joué
+        //Récuperer le nombre de case à vérifier à droite de la position jouée
         while (countColonne1 < matrice[0].length - 1) {
             countColonne1++;
             aVerifDroite++;
         }
 
-        //Récuperer combien de diagonale haut droite à  vérifier (hautDroite):
+        //Récuperer le nombre de case dans la diagonale haut droite à vérifier (hautDroite):
         while (aVerifHaut > 0 && aVerifDroite > 0) {
             aVerifHaut--;
             aVerifDroite--;
             aVerifHautDroite++;
         }
 
-        //Récuperer le nombre de case à vérifier en bas de la position joué
+        //Récuperer le nombre de case à vérifier en bas de la position jouée
         while (countLigne2 < matrice.length - 1) {
             countLigne2++;
             aVerifBas++;
         }
 
-        //Récupérer le nombre de case à vérifier à gauche
+        //Récupérer le nombre de case à vérifier à gauche de la position jouée
         while (countColonne2 > 0) {
             countColonne2--;
             aVerifGauche++;
         }
 
-        //Récuperer combien de diagonale haut gauche à  vérifier (hautDroite):
+        //Récuperer le nombre de case dans la diagonale bas gauche à vérifier (basGauche):
         while (aVerifBas > 0 && aVerifGauche > 0) {
             aVerifBas--;
             aVerifGauche--;
             aVerifBasGauche++;
         }
 
-        //Vérifier les coups gagnants diagonale en BasGauche de la position joué
+        //Récuperer le nombre de coup valide dans la diagonale BasGauche
         for (i = 1; i <= aVerifBasGauche; i++) {
             if (matrice[ligne + i][colonne - i] !== symbole) {
-                //console.log('pasegalX');
-                //Arrêter de parcourir
                 break;
             }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                //console.log('egalX');
-                valideBasGauche++;
-            }
+            else { valideBasGauche++; }
         }
 
-        //Vérifier les coups gagnants diagonale en HautDroite de la position joué
+        ////Récuperer le nombre de coup valide dans la diagonale HautDroite
         for (i = 1; i <= aVerifHautDroite; i++) {
             if (matrice[ligne - i][colonne + i] !== symbole) {
-                //Arrêter de parcourir
                 break;
             }
-            //Sinon, ajouter 1 à valideADroite
-            else {
-                valideHautDroite++;
-            }
+            else { valideHautDroite++; }
         }
-
         if (valideHautDroite + valideBasGauche == nombreGagnant - 1) {
             return true;
         }
-
         //console.log(`ligne: ${ligne} colonne: ${colonne} | caseAVerifHautDroit: ${aVerifHautDroite} | valideHautDroite: ${valideHautDroite} caseAVerifBasGauche: ${aVerifBasGauche} | valideBasGauche: ${valideBasGauche}`)
     }
     function coupGagnant(nombreGagnant, coup, symbole) {
@@ -563,18 +466,17 @@
         if (idJoueur == 1) {
             document.querySelector('label[for="nomJoueur1"]').innerHTML = `Joueur n°1: <b>${nomJoueur1}</b> <<<<`;
             document.querySelector('label[for="nomJoueur2"]').innerHTML = `Joueur n°2: <b>${nomJoueur2}</b> `;
-            console.log(document.querySelector('label[for="nomJoueur1"]'));
-            console.log('actualisé');
+            //console.log(document.querySelector('label[for="nomJoueur1"]'));
+            //console.log('actualisé');
         }
         if (idJoueur == 2) {
             document.querySelector('label[for="nomJoueur1"]').innerHTML = `Joueur n°1: <b>${nomJoueur1}</b> `;
             document.querySelector('label[for="nomJoueur2"]').innerHTML = `Joueur n°2: <b>${nomJoueur2}</b> <<<<`;
-            console.log(document.querySelector('label[for="nomJoueur2"]').innerHTML);
+            //console.log(document.querySelector('label[for="nomJoueur2"]').innerHTML);
         }
     }
     function saveLocalStorage(nameVariable, newValue) {
         localStorage.setItem(nameVariable, JSON.stringify(newValue));
-        //Actualiser le tableau score
     }
     function showButton(idButton) {
         document.querySelector(`#${idButton}`).setAttribute('style', 'display:inline-block');
@@ -583,34 +485,34 @@
     function hideButton(idButton) {
         document.querySelector(`#${idButton}`).setAttribute('style', 'display:none');
     }
-    
     nombreCoup = 0;
     function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2) {
         canvas.addEventListener('click', function (e) {
+            //Incrémente le nombre de coup
             nombreCoup++;
-            //Récupération des coordonnées de la sourie
+
+            //Définir la taille des cases et les cordonnées x et y à inserer dans la matrice
             sizeCase = sizeCanvas / nombreCase;
             let x = Math.ceil(e.offsetX / sizeCase) * sizeCase - sizeCase;
             let y = Math.ceil(e.offsetY / sizeCase) * sizeCase - sizeCase;
-            // console.log(`${x / 100} et ${y / 100}`);
 
-            //Vérifier si la case a été joué | 
+            //Récuperer le numero de la ligne et de la colonne du coup joué
             ligne = Math.round(y / sizeCase);
             colonne = Math.round(x / sizeCase);
+
+            //Vérifier si la case joué a déjà été joué
             if (!casePlayed(matrice[ligne][colonne])) {
                 //Jouer le tour
                 if (tour == 1) {
-                    matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
-                    console.log(matrice);
+                    matrice[ligne][colonne] = 'X'; //Inversé pour pouvoir visualiser dans la matrice dans le bon sens
                     drawX(x, y, caseWidth, caseHeight)
                     if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'X')) {
                         tour = 0;
-                        //Ajouter un point au joueur 1
                         game.addPoint(1);
-                        //Sauvegarder la game
                         saveLocalStorage('game', game);
                         actualiserScores(game.joueur1.score, game.joueur2.score);
-                        //Afficher et masquer l'alert pour dire que le joueur a gagné
+
+                        //Afficher puis masquer l'alert pour dire que le joueur a gagné
                         document.getElementById('alertWinJoueur1').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur1').innerHTML = `Ce joueur remporte la partie`;
                         window.setTimeout(function () {
@@ -626,16 +528,14 @@
                                     document.getElementById('alertWinJoueur1').classList = '';
                                 }, 1000)
                             }, 1000)
-
                         }, 2000);
-                        //Permettre de cliquer sur le bouton rejouer
-                        //document.querySelector('#btnRejouer').removeAttribute('disabled');
+
+                        //Afficher les boutons "rejouer" et 'nouvelle partie'
                         showButton('btnRejouer');
                         showButton('btnNouvellePartie');
-
                     }
                     else {
-                        //Vérifier l'égalité
+                        //Vérifier si le jeu est terminé (égalité)
                         if (nombreCoup == nombreCase * nombreCase) {
                             Swal.fire('Egalité, bien joué à vous deux');
                             tour = 0;
@@ -644,11 +544,7 @@
                             tour = 2;
                             actualiserLabelJoueur(2, nomJoueur1, nomJoueur2);
                         }
-
                     }
-
-                    //ifCoupGagnant tour = 0 sinon tour = 2
-
                 }
                 else if (tour == 2) {
                     matrice[ligne][colonne] = 'O'; //Inverser pour pouvoir visualiser dans la matrice
@@ -702,84 +598,42 @@
             //console.log(matrice);
         });
     }
-    function createObjectGame(nomJoueur1, nomJoueur2) {
-        partie = {
-            joueurs: [{
-                nom: 'Théo',
-                signe: 'X',
-                score: 2,
-            },
-            {
-                nom: 'Théo',
-                signe: 'O',
-                score: 2
-            }],
-            matrice: [],
-        }
-    }
-    class Game {
-        constructor(joueur1, joueur2, matrice) {
-            this.joueur1 = joueur1;
-            this.joueur2 = joueur2;
-            this.matrice = matrice;
-        }
-        addPoint(joueur) {
-            if (joueur == 1) this.joueur1.score++;
-            if (joueur == 2) this.joueur2.score++;
-        }
-    }
-
     function createGameObject(joueur1, joueur2, matrice) {
         game = new Game(joueur1, joueur2, matrice);
     }
-
     function actualiserScores(scoreJoueur1, scoreJoueur2) {
         document.querySelector('#scoreJoueur1').innerHTML = `${scoreJoueur1}`;
         document.querySelector('#scoreJoueur2').innerHTML = `${scoreJoueur2}`;
     }
-
     function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas) {
+        //Cacher le bouton "Nouvelle partie"
         hideButton('btnNouvellePartie');
-        //Joueurs
+
+        //Affecter les variables
         let nomJoueur1 = document.querySelector('#nomJoueur1').value;
         let nomJoueur2 = document.querySelector('#nomJoueur2').value;
         var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
         var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
-        //Vérifier le joueur 1
+
+        //Vérification des champs requis (nomJoueur1, nomJoueur2)
         if (nomJoueur1 !== undefined && nomJoueur1 !== '' && nomJoueur1.length >= 2) {
-            //Vérifier le joueur 2
             if (nomJoueur2 !== undefined && nomJoueur2 !== '' && nomJoueur2.length >= 1) {
                 if (nombreSymboleGagnant <= nombreCase) {
                     createCanvas(idCanvas, sizeCanvas, sizeCanvas);
-
                     drawLimit(canvas, nombreCase, nombreCase, backgroundColorCanvas);
                     tour = 1;
-
-
-
-
-
-
                     gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
-
-
                     //Afficher les noms des joueurs dans l'input
                     document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
                     document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
-
+                    //Actualiser les labels des noms des joueurs
                     actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
-
                     createMatrice(nombreCase, nombreCase);
                     createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
                     saveLocalStorage('game', game);
                     actualiserScores(game.joueur1.score, game.joueur2.score);
-                    //Ajouter les noms au label
                     localStorage.setItem('game', JSON.stringify(game));
-
                     hideButton('btnRejouer')
-
-
-
                 }
                 else {
                     Swal.fire({
@@ -811,64 +665,49 @@
 
 
     }
-    //Si une game est présente en storage: récuperer nom et afficher
+
+    //Récuperer une game précendente si elle existe en localStorage
     if (localStorage.getItem('game') !== null && localStorage.getItem('game') !== '') {
         exGame = JSON.parse(localStorage.getItem('game'));
         game = new Game({ 'nom': exGame.joueur1.nom, 'score': exGame.joueur1.score }, { 'nom': exGame.joueur2.nom, 'score': exGame.joueur2.score });
 
-        //Afficher les noms des joueurs dans l'input
+        //Afficher les noms des joueurs
         document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${game.joueur1.nom}</b>`;
         document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${game.joueur2.nom}</b>`;
 
-        //Afficher les scores
+        //Actualiser le tableau score
         actualiserScores(game.joueur1.score, game.joueur2.score);
 
-
-
-
-    }
-
-    document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
-        nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)');
-
-    })
-    if (typeof game !== 'undefined') {
         showButton('btnRejouer');
     }
-    document.querySelector('#btnRejouer').addEventListener('click', function () {
-        //Re-bloquer l'accès au bouton rejouer
-        //document.querySelector('#btnRejouer').setAttribute('disabled', 'disabled');
-        nombreCoup = 0;
-        //Récupérer les variables: nombreCase, nombreCase
-        var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
-        var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
+    //Lancer une partie au clic sur "Nouvelle partie"
+    document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
+        nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)');
+    })
 
+    //Relancer un jeu au clic sur "Bouton rejouer"
+    document.querySelector('#btnRejouer').addEventListener('click', function () {
+
+        //Initialiser le nombre de coup à 0
+        nombreCoup = 0;
+
+        var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;                      //Nombre de case du morpion
+        var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;    //Nombre de symbole aligné nécessaire pour gagner
+
+        //Masquer les boutons "Rejouer" et "Nouvelle partie"
         hideButton('btnRejouer');
         hideButton('btnNouvellePartie');
 
-
-
-
-        //Si on revient sur la page, reintialiser quelques paramètres
+        //Relancer quelques fonctions nécessaires au retour sur la page
         if (typeof canvas == 'undefined') {
             createCanvas('canvasJeu', 400, 400)
             gameListener(400, nombreCase, nombreSymboleGagnant, game.joueur1.nom, game.joueur1.nom);
         };
         drawLimit(canvas, nombreCase, nombreCase, 'rgb(248,241,241)');
-        //Creer la nouvelle matrice
         createMatrice(nombreCase, nombreCase);
         if (typeof tour == 'undefined') tour = 1;
-
-        //Faire commencer l'autre joue
         if (tour == 0) tour = 1;
-
     });
-
-    /* window.setTimeout(function() {
-    $(".alert").fadeTo(500, 0).slideUp(500, function(){
-        $(this).remove();
-    });
-    }, 2000);*/
 
 
 </script>
