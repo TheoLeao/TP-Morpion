@@ -110,12 +110,10 @@
 
                     <label for="nomJoueur1" class="form-label mb-2 mt-2">Joueur n°1:</span></label>
                     <div id="alertWinJoueur1" class="" role="alert"></div>
-                    <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required
-                        value="Théo">
+                    <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required>
                     <label for="nomJoueur2" class="form-label mb-2 mt-2">Joueur n°2:</label>
                     <div id="alertWinJoueur2" class="" role="alert"></div>
-                    <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required
-                        value="Antoine">
+                    <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required>
 
                     <div class="card mt-4 mb-2">
                         <div class="card-body">
@@ -123,8 +121,8 @@
                             <label for="inputRange_nombreDeCase" class="form-label">Nombre de case du morpion X et
                                 Y:</label>
                             <label id="label_nombreCase"><b>5</b></label>
-                            <input id="inputRange_nombreDeCase" type="range" class="form-range" min="3" max="9"
-                                step="1" value="5">
+                            <input id="inputRange_nombreDeCase" type="range" class="form-range" min="3" max="9" step="1"
+                                value="5">
 
                             <label for="inputRange_nombreDeCaseGagnante" class="form-label">Nombre de case à aligner
                                 pour gagner:</label>
@@ -135,11 +133,35 @@
 
                         </div>
                     </div>
+
                 </div>
 
 
                 <button id="btnRejouer" class="btn btn-secondary btn-sm" disabled>Rejouer</button>
                 <button id="btnNouvellePartie" class="btn btn-success">Nouvelle partie</button>
+                <div class="card mt-4 mb-2">
+                    <div class="card-body">
+                        <p><u>Score:</u></p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Joueur n°1</th>
+                                    <th scope="col">Joueur n°2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Partie gagné</th>
+                                    <td id="scoreJoueur1">Score joueur 1</td>
+                                    <td id="scoreJoueur2">Score joueur 2</td>
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
             </div>
 
 
@@ -147,7 +169,6 @@
         </div>
     </div>
 </body>
-<script src="js/script.js"></script>
 <script>
     //Actualiser le label de inputRange nombre case au changement de sa valeur
     document.querySelector('#inputRange_nombreDeCase').addEventListener('input', function () {
@@ -532,7 +553,9 @@
             console.log(document.querySelector('label[for="nomJoueur2"]').innerHTML);
         }
     }
-
+    function saveLocalStorage(nameVariable, newValue) {
+        localStorage.setItem(nameVariable, newValue);
+    }
     function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2) {
         canvas.addEventListener('click', function (e) {
             //Récupération des coordonnées de la sourie
@@ -550,10 +573,13 @@
                     matrice[ligne][colonne] = 'X'; //Inverser pour pouvoir visualiser dans la matrice
                     console.log(matrice);
                     drawX(x, y, caseWidth, caseHeight)
+
                     if (coupGagnant(nombreSymboleGagnant, [colonne, ligne], 'X')) {
                         tour = 0;
                         //Ajouter un point au joueur 1
                         game.addPoint(1);
+                        //Sauvegarder la game
+                        saveLocalStorage('game', game);
                         //Afficher et masquer l'alert pour dire que le joueur a gagné
                         document.getElementById('alertWinJoueur1').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur1').innerHTML = `Ce joueur remporte la partie`;
@@ -647,8 +673,8 @@
     function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas) {
 
         //Joueurs
-        let nomJoueur1 = document.querySelector('#nomJoueur1').value;
-        let nomJoueur2 = document.querySelector('#nomJoueur2').value;
+        let nomJoueur1 = localStorage.getItem('game') == null || localStorage.getItem('game') == '' ? document.querySelector('#nomJoueur1').value : JSON.parse(localStorage.getItem('game')).joueur1.nom;
+        let nomJoueur2 = localStorage.getItem('game') == null || localStorage.getItem('game') == '' ? document.querySelector('#nomJoueur2').value : JSON.parse(localStorage.getItem('game')).joueur2.nom;
         var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
         var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
         alert(`symbole gagnant: ${nombreSymboleGagnant} | nombreCase: ${nombreCase}`);
@@ -658,26 +684,41 @@
             if (nomJoueur2 !== undefined && nomJoueur2 !== '' && nomJoueur2.length >= 1) {
                 if (nombreSymboleGagnant < nombreCase) {
                     createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
-                    createMatrice(nombreCase, nombreCase);
+
                     drawLimit(canvas, nombreCase, nombreCase);
                     tour = 1;
 
-                    createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
 
-                    //Ajouter les noms au label
-                    document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
-                    document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
+
+
 
                     actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
 
                     gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
 
-                    console.log(game);
+                    //Création de la variable et insertion des valeurs du formulaire
+                    if (localStorage.getItem('game') == null || localStorage.getItem('game') == '') {
+                        //Afficher les noms des joueurs dans l'input
+                        document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
+                        document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
+
+                        createMatrice(nombreCase, nombreCase);
+                        createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
+                        //Ajouter les noms au label
+
+                        localStorage.setItem('game', JSON.stringify(game));
+                    }
+                    else {
+                        exGame = JSON.parse(localStorage.getItem('game'));
+                        game = new Game({ 'nom': exGame.joueur1.nom, 'score': exGame.joueur1.score }, { 'nom': exGame.joueur2.nom, 'score': exGame.joueur2.score });
+                        //Afficher les scores
+                    }
+
                 }
-                else{
+                else {
                     alert(`Nombre symbole gagnant superieur à nombre de case ${nombreSymboleGagnant} > ${nombreCase}`);
                 }
-                
+
 
             }
             else {
@@ -694,7 +735,19 @@
 
 
     }
+    //Si une game est présente en storage: récuperer nom et afficher
+    if (localStorage.getItem('game') !== null || localStorage.getItem('game') !== '') {
+        exGame = JSON.parse(localStorage.getItem('game'));
+        game = new Game({ 'nom': exGame.joueur1.nom, 'score': exGame.joueur1.score }, { 'nom': exGame.joueur2.nom, 'score': exGame.joueur2.score });
 
+        //Afficher les noms des joueurs dans l'input
+        document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${game.joueur1.nom}</b>`;
+        document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${game.joueur2.nom}</b>`;
+
+        //Afficher les scores
+        document.querySelector('#scoreJoueur1').innerHTML = `${game.joueur1.score}`;
+        document.querySelector('#scoreJoueur2').innerHTML = `${game.joueur2.score}`;
+    }
 
     document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
         nouvellePartie('canvasJeu', 400, 'rgb(248,241,241)');
@@ -705,13 +758,13 @@
 
         createMatrice(nombreCase, nombreCase);
         drawLimit(canvas, nombreCase, nombreCase);
-    })
+    });
 
     /* window.setTimeout(function() {
     $(".alert").fadeTo(500, 0).slideUp(500, function(){
         $(this).remove();
     });
-}, 2000);*/
+    }, 2000);*/
 
 
 </script>
