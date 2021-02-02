@@ -77,8 +77,9 @@
                                         boutons sont masqués.
                                     </li>
                                     <li>
-                                        6° Chaque fois qu'un score évolue, les noms et les scores sont enregistrés en
-                                        localStorage.
+                                        <strike>6° Chaque fois qu'un score évolue, les noms et les scores sont
+                                            enregistrés en
+                                            localStorage.</strike>
                                     </li>
                                     <li>
                                         7° Au démarrage d'une partie dans une nouvelle fenêtre du navigateur, si deux
@@ -110,10 +111,12 @@
 
                     <label for="nomJoueur1" class="form-label mb-2 mt-2">Joueur n°1:</span></label>
                     <div id="alertWinJoueur1" class="" role="alert"></div>
-                    <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required>
+                    <input class="form-control" id="nomJoueur1" type="text" placeholder="Nom joueur 1" required
+                        value="Théo">
                     <label for="nomJoueur2" class="form-label mb-2 mt-2">Joueur n°2:</label>
                     <div id="alertWinJoueur2" class="" role="alert"></div>
-                    <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required>
+                    <input class="form-control" id="nomJoueur2" type="text" placeholder="Nom joueur 2" required
+                        value="Antoine">
 
                     <div class="card mt-4 mb-2">
                         <div class="card-body">
@@ -183,13 +186,11 @@
     });
 
     //Fonctions
-    function createCanvas(idCanvas, width, height, backgroundColor) {
+    function createCanvas(idCanvas, width, height) {
         canvas = document.querySelector(`#${idCanvas}`);
         width = canvas.width = width;
         height = canvas.height = height;
         ctx = canvas.getContext('2d');
-        ctx.fillStyle = `${backgroundColor}`;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     function drawX(originX, originY, size) {
         padding = 10;
@@ -219,8 +220,10 @@
         ctx.stroke();
 
     }
-    function drawLimit(canvas, nombreLigne, nombreColonne) {
+    function drawLimit(canvas, nombreLigne, nombreColonne, backgroundColor) {
         if (nombreLigne != nombreColonne) return (error('Le nombre de ligne n\'est pas égale au nombre de colonne'));;
+        ctx.fillStyle = `${backgroundColor}`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         //Récuperer taille du canvas
         canvasWidth = canvas.width;
         canvasHeight = canvas.height;
@@ -586,11 +589,17 @@
                         document.getElementById('alertWinJoueur1').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur1').innerHTML = `Ce joueur remporte la partie`;
                         window.setTimeout(function () {
+                            document.getElementById('alertWinJoueur1').removeAttribute('style');
+                            document.getElementById('alertWinJoueur1').classList = 'alert fade alert-success';
                             $(".alert").fadeTo(500, 0).slideUp(500, function () {
                             });
                             //Supprimer le texte 1 seconde après
                             setTimeout(function () {
                                 document.getElementById('alertWinJoueur1').innerHTML = '';
+                                setTimeout(function () {
+                                    document.getElementById('alertWinJoueur1').removeAttribute('style');
+                                    document.getElementById('alertWinJoueur1').classList = '';
+                                }, 1000)
                             }, 1000)
 
                         }, 2000);
@@ -626,6 +635,11 @@
                             //Supprimer le texte 1 seconde après
                             setTimeout(function () {
                                 document.getElementById('alertWinJoueur2').innerHTML = '';
+                                //Renitialiser l'état à 0 de l'alert
+                                setTimeout(function () {
+                                    document.getElementById('alertWinJoueur2').removeAttribute('style');
+                                    document.getElementById('alertWinJoueur2').classList = '';
+                                }, 1000)
                             }, 1000)
 
                         }, 2000);
@@ -693,20 +707,20 @@
             //Vérifier le joueur 2
             if (nomJoueur2 !== undefined && nomJoueur2 !== '' && nomJoueur2.length >= 1) {
                 if (nombreSymboleGagnant < nombreCase) {
-                    createCanvas(idCanvas, sizeCanvas, sizeCanvas, backgroundColorCanvas);
+                    createCanvas(idCanvas, sizeCanvas, sizeCanvas);
 
-                    drawLimit(canvas, nombreCase, nombreCase);
+                    drawLimit(canvas, nombreCase, nombreCase, backgroundColorCanvas);
                     tour = 1;
 
 
 
 
 
-                    
+
 
                     gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
 
-                    
+
                     //Afficher les noms des joueurs dans l'input
                     document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
                     document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
@@ -762,10 +776,23 @@
     })
     document.querySelector('#btnRejouer').addEventListener('click', function () {
         //Re-bloquer l'accès au bouton rejouer
-        document.querySelector('#btnRejouer').setAttribute('disabled', 'disabled');
+        //document.querySelector('#btnRejouer').setAttribute('disabled', 'disabled');
 
+        //Récupérer les variables: nombreCase, nombreCase
+        var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
+        var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
+
+        //Creer la nouvelle matrice
         createMatrice(nombreCase, nombreCase);
-        drawLimit(canvas, nombreCase, nombreCase);
+
+        //Redessiner par-dessus
+        drawLimit(canvas, nombreCase, nombreCase, 'rgb(248,241,241)');
+
+        //Faire commencer l'autre joueur
+        if (tour == 0) tour = 1;
+
+        alert(tour);
+
     });
 
     /* window.setTimeout(function() {
