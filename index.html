@@ -153,8 +153,8 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">Partie gagné</th>
-                                    <td id="scoreJoueur1">Score joueur 1</td>
-                                    <td id="scoreJoueur2">Score joueur 2</td>
+                                    <td id="scoreJoueur1">0</td>
+                                    <td id="scoreJoueur2">0</td>
 
                             </tbody>
                         </table>
@@ -554,7 +554,8 @@
         }
     }
     function saveLocalStorage(nameVariable, newValue) {
-        localStorage.setItem(nameVariable, newValue);
+        localStorage.setItem(nameVariable, JSON.stringify(newValue));
+        //Actualiser le tableau score
     }
     function gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2) {
         canvas.addEventListener('click', function (e) {
@@ -580,6 +581,7 @@
                         game.addPoint(1);
                         //Sauvegarder la game
                         saveLocalStorage('game', game);
+                        actualiserScores(game.joueur1.score, game.joueur2.score);
                         //Afficher et masquer l'alert pour dire que le joueur a gagné
                         document.getElementById('alertWinJoueur1').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur1').innerHTML = `Ce joueur remporte la partie`;
@@ -612,6 +614,9 @@
 
                         //Ajouter un point au joueur 1
                         game.addPoint(2);
+                        //Sauvegarder la game
+                        saveLocalStorage('game', game);
+                        actualiserScores(game.joueur1.score, game.joueur2.score);
                         //Afficher et masquer l'alert pour dire que le joueur a gagné
                         document.getElementById('alertWinJoueur2').classList = 'alert show alert-success';
                         document.getElementById('alertWinJoueur2').innerHTML = `Ce joueur remporte la partie`;
@@ -668,13 +673,18 @@
 
     function createGameObject(joueur1, joueur2, matrice) {
         game = new Game(joueur1, joueur2, matrice);
-        game.addPoint(2);
     }
+
+    function actualiserScores(scoreJoueur1, scoreJoueur2) {
+        document.querySelector('#scoreJoueur1').innerHTML = `${scoreJoueur1}`;
+        document.querySelector('#scoreJoueur2').innerHTML = `${scoreJoueur2}`;
+    }
+
     function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas) {
 
         //Joueurs
-        let nomJoueur1 = localStorage.getItem('game') == null || localStorage.getItem('game') == '' ? document.querySelector('#nomJoueur1').value : JSON.parse(localStorage.getItem('game')).joueur1.nom;
-        let nomJoueur2 = localStorage.getItem('game') == null || localStorage.getItem('game') == '' ? document.querySelector('#nomJoueur2').value : JSON.parse(localStorage.getItem('game')).joueur2.nom;
+        let nomJoueur1 = document.querySelector('#nomJoueur1').value;
+        let nomJoueur2 = document.querySelector('#nomJoueur2').value;
         var nombreCase = document.querySelector('#inputRange_nombreDeCase').value;
         var nombreSymboleGagnant = document.querySelector('#inputRange_nombreDeCaseGagnante').value;
         alert(`symbole gagnant: ${nombreSymboleGagnant} | nombreCase: ${nombreCase}`);
@@ -692,27 +702,25 @@
 
 
 
-                    actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
+                    
 
                     gameListener(sizeCanvas, nombreCase, nombreSymboleGagnant, nomJoueur1, nomJoueur2);
 
-                    //Création de la variable et insertion des valeurs du formulaire
-                    if (localStorage.getItem('game') == null || localStorage.getItem('game') == '') {
-                        //Afficher les noms des joueurs dans l'input
-                        document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
-                        document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
+                    
+                    //Afficher les noms des joueurs dans l'input
+                    document.querySelector('label[for="nomJoueur1"]').innerHTML += ` <b>${nomJoueur1}</b>`;
+                    document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${nomJoueur2}</b>`;
 
-                        createMatrice(nombreCase, nombreCase);
-                        createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
-                        //Ajouter les noms au label
+                    actualiserLabelJoueur(1, nomJoueur1, nomJoueur2);
 
-                        localStorage.setItem('game', JSON.stringify(game));
-                    }
-                    else {
-                        exGame = JSON.parse(localStorage.getItem('game'));
-                        game = new Game({ 'nom': exGame.joueur1.nom, 'score': exGame.joueur1.score }, { 'nom': exGame.joueur2.nom, 'score': exGame.joueur2.score });
-                        //Afficher les scores
-                    }
+                    createMatrice(nombreCase, nombreCase);
+                    createGameObject({ 'nom': nomJoueur1, 'score': 0 }, { 'nom': nomJoueur2, 'score': 0 }, matrice);
+                    saveLocalStorage('game', game);
+                    actualiserScores(game.joueur1.score, game.joueur2.score);
+                    //Ajouter les noms au label
+
+                    localStorage.setItem('game', JSON.stringify(game));
+
 
                 }
                 else {
@@ -736,7 +744,7 @@
 
     }
     //Si une game est présente en storage: récuperer nom et afficher
-    if (localStorage.getItem('game') !== null || localStorage.getItem('game') !== '') {
+    if (localStorage.getItem('game') !== null && localStorage.getItem('game') !== '') {
         exGame = JSON.parse(localStorage.getItem('game'));
         game = new Game({ 'nom': exGame.joueur1.nom, 'score': exGame.joueur1.score }, { 'nom': exGame.joueur2.nom, 'score': exGame.joueur2.score });
 
@@ -745,8 +753,8 @@
         document.querySelector('label[for="nomJoueur2"]').innerHTML += ` <b>${game.joueur2.nom}</b>`;
 
         //Afficher les scores
-        document.querySelector('#scoreJoueur1').innerHTML = `${game.joueur1.score}`;
-        document.querySelector('#scoreJoueur2').innerHTML = `${game.joueur2.score}`;
+        actualiserScores(game.joueur1.score, game.joueur2.score);
+
     }
 
     document.querySelector('#btnNouvellePartie').addEventListener('click', function () {
