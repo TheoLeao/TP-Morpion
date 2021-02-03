@@ -107,7 +107,8 @@
                                         <li>Affichage d'alert dynamique</li>
                                         <li>Intégration d'un style avec bootstrap 5.0</li>
                                     </ul>
-                                    <p>Lien github: <a href="https://github.com/TheoLeao/TP-Morpion" target="_blank">Accéder au github du projet</a></p>
+                                    <p>Lien github: <a href="https://github.com/TheoLeao/TP-Morpion"
+                                            target="_blank">Accéder au github du projet</a></p>
 
 
                                 </ul>
@@ -605,8 +606,6 @@
         document.querySelector('#scoreJoueur2').innerHTML = `${scoreJoueur2}`;
     }
     function nouvellePartie(idCanvas, sizeCanvas, backgroundColorCanvas) {
-        //Cacher le bouton "Nouvelle partie"
-        hideButton('btnNouvellePartie');
 
         //Affecter les variables
         let nomJoueur1 = document.querySelector('#nomJoueur1').value;
@@ -632,7 +631,8 @@
                     saveLocalStorage('game', game);
                     actualiserScores(game.joueur1.score, game.joueur2.score);
                     localStorage.setItem('game', JSON.stringify(game));
-                    hideButton('btnRejouer')
+                    hideButton('btnRejouer');
+                    hideButton('btnNouvellePartie');
                 }
                 else {
                     Swal.fire({
